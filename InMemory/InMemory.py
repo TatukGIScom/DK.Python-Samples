@@ -39,7 +39,7 @@ class InMemoryForm(pdk.TGIS_PvlForm):
         self.btnAnimate.Caption = "Animate"
         self.btnAnimate.OnClick = self.btnAnimate_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
         
         self.statusbar = pdk.TGIS_PvlPanel(self.Context)

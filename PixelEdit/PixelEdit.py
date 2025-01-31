@@ -39,7 +39,7 @@ class PixelEditForm(pdk.TGIS_PvlForm):
         self.btnCreateGrid.Caption = "Create a new GRD"
         self.btnCreateGrid.OnClick = self.btnCreateGridClick
         
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
 
         self.Memo1 = pdk.TGIS_PvlMemo(self.Context)

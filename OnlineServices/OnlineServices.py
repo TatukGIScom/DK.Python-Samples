@@ -176,7 +176,7 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
         self.strgrdRoutingDir.Place(180, 527, None, 12, None, 79)
         self.strgrdRoutingDir.OnClick = self.strgrdRoutingDir_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 256
         self.GIS.Top = 0
         self.GIS.Width = 640

@@ -36,7 +36,7 @@ class LegendForm(pdk.TGIS_PvlForm):
         self.label = pdk.TGIS_PvlLabel(self.status_bar_bottom.Context)
         self.label.Place(200, 19, None, 3, None, 0)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.VisibleExtentChangeEvent = self.VisibleExtentChange
         self.GIS.Left = 140
         self.GIS.Top = 29

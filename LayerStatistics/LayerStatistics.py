@@ -28,25 +28,25 @@ class LayerStatisticsForm(pdk.TGIS_PvlForm):
         self.rbVector = pdk.TGIS_PvlRadioButton(self.gbSelectLayer.Context)
         self.rbVector.Place(56, 17, None, 6, None, 19)
         self.rbVector.Caption = "Vector"
-        self.rbVector.OnClick = self.rbVector_click
+        self.rbVector.OnChange = self.rbVector_change
 
         self.rbGrid = pdk.TGIS_PvlRadioButton(self.gbSelectLayer.Context)
         self.rbGrid.Place(56, 17, None, 6, None, 42)
         self.rbGrid.Caption = "Grid"
-        self.rbGrid.OnClick = self.rbGrid_click
+        self.rbGrid.OnChange = self.rbGrid_change
 
         self.rbPixel = pdk.TGIS_PvlRadioButton(self.gbSelectLayer.Context)
         self.rbPixel.Place(56, 17, None, 6, None, 65)
         self.rbPixel.Caption = "Pixel"
-        self.rbPixel.OnClick = self.rbPixel_click
+        self.rbPixel.OnChange = self.rbPixel_change
 
         self.rbCustom = pdk.TGIS_PvlRadioButton(self.gbSelectLayer.Context)
-        self.rbCustom.Place(56, 17, None, 6, None, 88)
+        self.rbCustom.Place(63, 17, None, 6, None, 88)
         self.rbCustom.Caption = "Custom"
-        self.rbCustom.OnClick = self.rbCustom_click
+        self.rbCustom.OnChange = self.rbCustom_change
 
         self.btnOpen = pdk.TGIS_PvlButton(self.gbSelectLayer.Context)
-        self.btnOpen.Place(75, 23, None, 72, None, 85)
+        self.btnOpen.Place(75, 23, None, 80, None, 85)
         self.btnOpen.Caption = "Open"
         self.btnOpen.Enabled = False
         self.btnOpen.OnClick = self.btnOpen_click
@@ -216,7 +216,7 @@ class LayerStatisticsForm(pdk.TGIS_PvlForm):
         self.btnSaveStats.Caption = "Save *.ttkstats"
         self.btnSaveStats.OnClick = self.btnSaveStats_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 208
         self.GIS.Top = 12
         self.GIS.Width = 714
@@ -230,7 +230,7 @@ class LayerStatisticsForm(pdk.TGIS_PvlForm):
 
         # open sample vector layer
         self.rbVector.Checked = True
-        self.rbVector_click(self)
+        self.rbVector_change(self)
 
         # set common functions
         self.checkPredefined(self.STATISTICS_STANDARD)
@@ -321,22 +321,34 @@ class LayerStatisticsForm(pdk.TGIS_PvlForm):
         ll = self.GIS.Items[0]
         ll.Statistics.SaveToFile()
 
-    def rbVector_click(self, _sender):
+    def rbVector_change(self, _sender):
+        if not self.rbVector.Checked:
+            return
+        
         self.openLayerAndStats(pdk.TGIS_Utils.GisSamplesDataDirDownload() +
                                "/World/Countries/USA/States/California/Counties.shp")
         self.btnOpen.Enabled = False
 
-    def rbGrid_click(self, _sender):
+    def rbGrid_change(self, _sender):
+        if not self.rbGrid.Checked:
+            return
+
         self.openLayerAndStats(pdk.TGIS_Utils.GisSamplesDataDirDownload() +
                                 "World/Countries/USA/States/California/San Bernardino/NED/w001001.adf")
         self.btnOpen.Enabled = False
 
-    def rbPixel_click(self, _sender):
+    def rbPixel_change(self, _sender):
+        if not self.rbPixel.Checked:
+            return
+        
         self.openLayerAndStats(pdk.TGIS_Utils.GisSamplesDataDirDownload() +
                                "/World/Countries/USA/States/California/San Bernardino/DOQ/37134877.jpg")
         self.btnOpen.Enabled = False
 
-    def rbCustom_click(self, _sender):
+    def rbCustom_change(self, _sender):
+        if not self.rbCustom.Checked:
+            return
+        
         self.btnOpen.Enabled = True
 
     def btnOpen_click(self, _sender):

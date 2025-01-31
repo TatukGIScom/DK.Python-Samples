@@ -53,7 +53,7 @@ class DirectWriteForm(pdk.TGIS_PvlForm):
         self.lblMsg.Place(200, 19, None, 3, None, 0)
         self.lblMsg.Caption = ""
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 29
         self.GIS.Width = 592

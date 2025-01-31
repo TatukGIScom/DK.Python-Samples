@@ -60,7 +60,7 @@ class RasterAlgebraForm(pdk.TGIS_PvlForm):
         self.progress_bar.Place(564, 23, None, 16, None, 92)
         self.progress_bar.Visible = False
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 16
         self.GIS.Top = 121
         self.GIS.Width = 428

@@ -40,7 +40,7 @@ class TopologyForm(pdk.TGIS_PvlForm):
         self.btnAxorB.Caption = "A xor B"
         self.btnAxorB.OnClick = self.btnAxorB_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 29
         self.GIS.Width = 592

@@ -15,7 +15,7 @@ class HierarchyForm(pdk.TGIS_PvlForm):
         self.btnHierarchy.Caption = "Build Hierarchy"
         self.btnHierarchy.OnClick = self.btnHierarchy_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 180
         self.GIS.Top = 23
         self.GIS.Width = 324

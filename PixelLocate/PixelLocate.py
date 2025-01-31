@@ -53,7 +53,7 @@ class PixelLocateForm(pdk.TGIS_PvlForm):
         self.memo1.Text = ""
         self.memo1.Place(165, 140, None, 10, None, 34)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 0
         self.GIS.Width = 400

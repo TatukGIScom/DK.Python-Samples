@@ -28,7 +28,7 @@ class LocateForm(pdk.TGIS_PvlForm):
         self.btnZoomOut.Caption = "Zoom Out"
         self.btnZoomOut.OnClick = self.btnZoomOut_click
         
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
         self.GIS.OnMouseMove = self.GISMouseMove
         self.GIS.OnMouseDown = self.GISMouseDown

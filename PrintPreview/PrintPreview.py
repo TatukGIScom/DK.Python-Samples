@@ -57,10 +57,10 @@ class PrintPreviewForm(pdk.TGIS_PvlForm):
         self.chkStandardPrint = pdk.TGIS_PvlCheckBox(self.Context)
         self.chkStandardPrint.Place(164, 26, None, 650, None, 300)
         self.chkStandardPrint.Caption = "Standard print:"
-        self.chkStandardPrint.OnClick = self.chkStandardPrint_change
+        self.chkStandardPrint.OnChange = self.chkStandardPrint_change
         self.chkStandardPrint.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 300
         self.GIS.Top = 62
         self.GIS.Width = 339

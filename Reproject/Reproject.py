@@ -8,7 +8,7 @@ class ReprojectForm(pdk.TGIS_PvlForm):
         self.ClientHeight = 466
         self.OnShow = self.form_show
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 25
         self.GIS.Width = 592

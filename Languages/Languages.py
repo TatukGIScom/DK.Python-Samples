@@ -24,7 +24,7 @@ class LanguagesForm(pdk.TGIS_PvlForm):
             self.comboBox1.ItemsAdd(name)
         self.comboBox1.OnChange = self.comboBox1_change
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 29
         self.GIS.Width = 592

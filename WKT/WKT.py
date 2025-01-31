@@ -46,7 +46,7 @@ class WktForm(pdk.TGIS_PvlForm):
         self.memoWkt.OnChange = self.memo_Change
         self.memoWkt.OnClick = self.memo_Change
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 0
         self.GIS.Width = 592

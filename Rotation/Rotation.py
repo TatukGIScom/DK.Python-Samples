@@ -67,7 +67,7 @@ class RotationForm(pdk.TGIS_PvlForm):
         self.lblStatus.Width = 400
         self.lblStatus.Caption = "Click on the map to set a new rotation point"
         
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         # self.GIS.Left = 0
         # self.GIS.Top = 29
         # self.GIS.Width = 592

@@ -13,7 +13,7 @@ class MultiselectForm(pdk.TGIS_PvlForm):
         self.toolbar_buttons = pdk.TGIS_PvlPanel(self.Context)
         self.toolbar_buttons.Place(592, 29, None, 0, None, 0)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 26
         self.GIS.Width = 417

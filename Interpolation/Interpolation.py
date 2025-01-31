@@ -12,7 +12,7 @@ class InterpolationForm(pdk.TGIS_PvlForm):
         self.ClientHeight = 430
         self.OnShow = self.form_show
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 152
         self.GIS.Top = 12
         self.GIS.Width = 420
@@ -28,27 +28,27 @@ class InterpolationForm(pdk.TGIS_PvlForm):
         self.rbIDW.Place(134, 17, None, 12, None, 30)
         self.rbIDW.Caption = "IDW Interpolation"
         self.rbIDW.Checked = True
-        self.rbIDW.OnClick = self.rbAny_click
+        self.rbIDW.OnChange = self.rbAny_change
 
         self.rbKriging = pdk.TGIS_PvlRadioButton(self.Context)
         self.rbKriging.Place(134, 17, None, 12, None, 53)
         self.rbKriging.Caption = "Kriging Interpolation"
-        self.rbKriging.OnClick = self.rbAny_click
+        self.rbKriging.OnChange = self.rbAny_change
 
         self.rbSpline = pdk.TGIS_PvlRadioButton(self.Context)
         self.rbSpline.Place(134, 17, None, 12, None, 76)
         self.rbSpline.Caption = "Spline Interpolation"
-        self.rbSpline.OnClick = self.rbAny_click
+        self.rbSpline.OnChange = self.rbAny_change
 
         self.rbHeatMap = pdk.TGIS_PvlRadioButton(self.Context)
         self.rbHeatMap.Place(134, 17, None, 12, None, 99)
         self.rbHeatMap.Caption = "Heat Map"
-        self.rbHeatMap.OnClick = self.rbAny_click
+        self.rbHeatMap.OnChange = self.rbAny_change
 
         self.rbConcentrationMap = pdk.TGIS_PvlRadioButton(self.Context)
         self.rbConcentrationMap.Place(134, 17, None, 12, None, 122)
         self.rbConcentrationMap.Caption = "Concentration Map"
-        self.rbConcentrationMap.OnClick = self.rbAny_click
+        self.rbConcentrationMap.OnChange = self.rbAny_change
 
         self.lblSemivariance = pdk.TGIS_PvlLabel(self.Context)
         self.lblSemivariance.Place(71, 13, None, 12, None, 157)
@@ -81,7 +81,7 @@ class InterpolationForm(pdk.TGIS_PvlForm):
         )
         self.GIS.CS = pdk.TGIS_CSFactory.ByEPSG(3395)
 
-    def rbAny_click(self, _sender):
+    def rbAny_change(self, _sender): 
         if self.rbKriging.Checked:
             self.lblSemivariance.Visible = True
             self.cbSemivariance.Visible = True

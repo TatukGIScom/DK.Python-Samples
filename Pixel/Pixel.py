@@ -42,7 +42,7 @@ class PixelForm(pdk.TGIS_PvlForm):
         self.status_bar_bottom.Place(592, 19, None, 0, None, 480)
         self.status_bar_bottom.Align = "Bottom"
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
 

@@ -142,7 +142,7 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
         self.cbxCustomGrid = pdk.TGIS_PvlCheckBox(self.pnlParams.Context)
         self.cbxCustomGrid.Place(1781, 17, None, 10, None, 72)
         self.cbxCustomGrid.Caption = "Attach custom grid operation"
-        self.cbxCustomGrid.OnClick = self.cbxCustomGrid_click
+        self.cbxCustomGrid.OnChange = self.cbxCustomGrid_change
 
         # Operations
         self.gbxMain = pdk.TGIS_PvlGroupBox(self.pnlParams.Context)
@@ -259,7 +259,7 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
         self.btnRun.Caption = "Run Operation"
         self.btnRun.OnClick = self.btnRun_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
         
         self.GIS_legend = pdk.TGIS_PvlControlLegend(self.Context)
@@ -280,7 +280,7 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
         )
         self.GIS.FullExtent()
 
-    def cbxCustomGrid_click(self, _sender):
+    def cbxCustomGrid_change(self, _sender):
         lp = self.GIS.Items[0]
 
         if not lp:
@@ -432,7 +432,8 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
         if self.GIS.Get(ld.Name):
             self.GIS.Delete(ld.Name)
 
-        ld.Params.Pixel.GridShadow = False
+        ld.Params.Pixel.GridShadow = self.cbxOperations.ItemIndex == 7
+
         self.GIS.Add(ld)
 
         dem.Process(lp, lp.Extent, ld, dop, self.doBusyEvent)

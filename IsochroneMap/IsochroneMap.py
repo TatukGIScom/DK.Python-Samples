@@ -76,7 +76,7 @@ class IsochroneMapForm(pdk.TGIS_PvlForm):
         self.label1.Place(160, 34, None, 24, None, 212)
         self.label1.Caption = "Click on the map to set start point and generate isochrone"
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = -2
         self.GIS.Top = 28
         self.GIS.Width = 400
@@ -179,8 +179,8 @@ class IsochroneMapForm(pdk.TGIS_PvlForm):
             # block all highways
             shp = self.layerSrc.GetShape(uid)
             if shp.GetField("MTFCC") < "S1400":
-                cost.Value = -1
-                revcost.Value = -1
+                cost.Value = float(-1)
+                revcost.Value = float(-1)
 
     def btnFullExtent_click(self, _sender):
         self.GIS.FullExtent()

@@ -30,9 +30,9 @@ class AddLayerForm(pdk.TGIS_PvlForm):
         self.chkDrag = pdk.TGIS_PvlCheckBox(self.toolbar.Context)
         self.chkDrag.Caption = "Dragging"
         self.chkDrag.Place(75, 22, self.btnZoomOut, 3, None, 3)
-        self.chkDrag.OnClick = self.chkDrag_click
+        self.chkDrag.OnChange = self.chkDrag_change
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
 
     def btnOpen_click(self, _sender):
@@ -63,9 +63,9 @@ class AddLayerForm(pdk.TGIS_PvlForm):
             return
         self.GIS.Zoom = self.GIS.Zoom / 2
 
-    def chkDrag_click(self, _sender):
+    def chkDrag_change(self, _sender):
         # change viewer mode
-        if not self.chkDrag.Checked:
+        if self.chkDrag.Checked:
             self.GIS.Mode = pdk.TGIS_ViewerMode().Drag
         else:
             self.GIS.Mode = pdk.TGIS_ViewerMode().Select

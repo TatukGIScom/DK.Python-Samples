@@ -74,7 +74,7 @@ class GeocodingForm(pdk.TGIS_PvlForm):
         self.memRoute.Place(188, 227, None, 3, None, 240)
         self.memRoute.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 0
         self.GIS.Width = 414

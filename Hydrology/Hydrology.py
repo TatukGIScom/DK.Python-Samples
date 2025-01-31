@@ -108,7 +108,7 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btn3D.OnClick = self.btn3D_click
         self.btn3D.Enabled = False
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 197
         self.GIS.Top = 24
         self.GIS.Width = 583

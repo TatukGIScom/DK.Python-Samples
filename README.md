@@ -5,13 +5,15 @@
 ---
 
 This repository contains samples for the **TatukGIS Developer Kernel for Python** (**DK.Python**).
+For more information about DK.Python, visit [GitHub](https://github.com/TatukGIScom/DK.Python) page.
 
 ## Installation
 DK.Python is available on [pypi.org](https://pypi.org/project/tatukgis-pdk/).
 
     pip install tatukgis_pdk
     
-## Using
+## Usage
+Import `tatukgis_pdk` into your program to get started:
 
     import tatukgis_pdk as pdk
   
@@ -22,6 +24,6 @@ DK.Python is available on [pypi.org](https://pypi.org/project/tatukgis-pdk/).
 - API Overview<br>https://docs.tatukgis.com/DK11/guides:overview:overview
 - Samples overview<br>https://docs.tatukgis.com/DK11/samples:samples
 
-## General License Terms
+## License Terms
 
 - Samples are released under MIT license.

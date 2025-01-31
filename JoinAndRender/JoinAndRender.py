@@ -66,7 +66,7 @@ class JoinAndRenderForm(pdk.TGIS_PvlForm):
         self.status_bar_bottom.Place(552, 19, None, 0, None, 480)
         self.status_bar_bottom.Align = "Bottom"
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 143
         self.GIS.Top = 28
         self.GIS.Width = 400
@@ -170,6 +170,7 @@ class JoinAndRenderForm(pdk.TGIS_PvlForm):
 
     def pColorStart_click(self, sender):
         dlg_color = pdk.TGIS_ControlColor(self)
+        dlg_color.Color = self.pColorStart.Color
         if dlg_color.Execute() != pdk.TGIS_PvlModalResult().OK:
             return
 
@@ -178,6 +179,7 @@ class JoinAndRenderForm(pdk.TGIS_PvlForm):
 
     def pColorEnd_click(self, sender):
         dlg_color = pdk.TGIS_ControlColor(self)
+        dlg_color.Color = self.pColorEnd.Color
         if dlg_color.Execute() != pdk.TGIS_PvlModalResult().OK:
             return
 

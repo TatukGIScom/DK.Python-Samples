@@ -41,7 +41,7 @@ class WMTSManagerForm(pdk.TGIS_PvlForm):
         self.btnSelect.Caption = "Select"
         self.btnSelect.OnClick = self.btnSelect_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 170
         self.GIS.Top = 29
         self.GIS.Width = 584

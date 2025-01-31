@@ -40,7 +40,7 @@ class EnumeratorsForm(pdk.TGIS_PvlForm):
         self.status_bar_bottom.Place(592, 19, None, 0, None, 480)
         self.status_bar_bottom.Align = "Bottom"
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 29
         self.GIS.Width = 592

@@ -56,7 +56,7 @@ class TemplatePrintForm(pdk.TGIS_PvlForm):
         self.file_label = pdk.TGIS_PvlLabel(self.status_bar.Context)
         self.file_label.Place(200, 19, None, 230, None, 0)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         # self.GIS.Left = 229
         # self.GIS.Top = 115
         # self.GIS.Width = 718

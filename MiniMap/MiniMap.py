@@ -75,13 +75,13 @@ class MiniMapForm(pdk.TGIS_PvlForm):
         self.labelP4.Align = "Top"
         self.labelP4.Caption = 'label4'
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
         self.GIS.VisibleExtentChangeEvent = self.VisibleExtentChange
         self.GIS.OnMouseMove = self.GISMouseMove
         self.GIS.OnMouseUp = self.GISMouseUp
 
-        self.GISm = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GISm = pdk.TGIS_ViewerWnd(self.Context)
         self.GISm.Place(200, 100, None, 5, None, 250)
         self.GISm.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Bottom)
         self.GISm.OnMouseDown = self.GISmMouseDown

@@ -57,7 +57,7 @@ class GridForm(pdk.TGIS_PvlForm):
         self.lblAltitude.Place(300, 19, None, 3, None, 0)
         self.lblAltitude.Caption = ''
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 130
         self.GIS.Top = 30
         self.GIS.Width = 480

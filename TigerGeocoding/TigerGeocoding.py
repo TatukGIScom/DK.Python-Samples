@@ -71,7 +71,7 @@ class TigerGeocodingForm(pdk.TGIS_PvlForm):
         self.lstMemo.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
         self.lstMemo.OnClick = self.lstMemo_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 29
         self.GIS.Width = 351
@@ -331,9 +331,7 @@ class TigerGeocodingForm(pdk.TGIS_PvlForm):
 
     def lstMemo_click(self, _sender):
         # check if the cell can be selected
-        can_select = (self.lstMemo.CursorPos.Y < self.lstMemo.Lines.Count) and not \
-            ((self.lstMemo.Lines.Count == 1) and (self.lstMemo.Lines[self.lstMemo.CaretPosition.Line] == ""))
-        if can_select and self.state == 1:
+        if self.state == 1:
             self.selectedRow = self.lstMemo.CursorPos.Y   #self.lstMemo.CaretPosition.Line
             self.show_info()
 

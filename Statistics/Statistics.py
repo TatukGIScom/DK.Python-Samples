@@ -13,7 +13,7 @@ class StatisticsForm(pdk.TGIS_PvlForm):
         self.ClientHeight = 500
         self.OnShow = self.form_show
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
 
         self.toolbar_buttons = pdk.TGIS_PvlPanel(self.Context)

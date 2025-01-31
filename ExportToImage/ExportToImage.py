@@ -38,14 +38,14 @@ class ExportToImageForm(pdk.TGIS_PvlForm):
         self.rbImage.Place(54, 17, None, 438, None, 35)
         self.rbImage.Caption = "Image"
         self.rbImage.Checked = True
-        self.rbImage.OnClick = self.rbImage_CheckedChanged
+        self.rbImage.OnChange = self.rbImage_change
 
         self.rbGrid = pdk.TGIS_PvlRadioButton(self.groupBox1.Context)
         self.rbGrid.Place(44, 17, None, 438, None, 59)
         self.rbGrid.Caption = "Grid"
-        self.rbGrid.OnClick = self.rbGrid_CheckedChanged
+        self.rbGrid.OnChange = self.rbGrid_change
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 31
         self.GIS.Top = 41
         self.GIS.Width = 426
@@ -125,7 +125,10 @@ class ExportToImageForm(pdk.TGIS_PvlForm):
         self.rbBestQ.Checked = True
         self.rbExtentFull.Checked = True
 
-    def rbImage_CheckedChanged(self, _sender):
+    def rbImage_change(self, _sender):
+        if not self.rbImage.Checked:
+            return
+        
         self.GIS.Open(pdk.TGIS_Utils.GisSamplesDataDirDownload()
                       + "/World/VisibleEarth/world_8km.jpg")
         self.edtPath.Text = ""
@@ -133,7 +136,10 @@ class ExportToImageForm(pdk.TGIS_PvlForm):
         self.groupBox3.Enabled = False
         self.btnExport.Enabled = False
 
-    def rbGrid_CheckedChanged(self, _sender):
+    def rbGrid_change(self, _sender):
+        if not self.rbGrid.Checked:
+            return
+
         self.GIS.Open(pdk.TGIS_Utils.GisSamplesDataDirDownload()
                       + "/World/Countries/USA/States/California/San Bernardino/NED/hdr.adf")
         self.edtPath.Text = ""

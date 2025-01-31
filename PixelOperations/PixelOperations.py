@@ -84,13 +84,13 @@ class PixelOperationsForm(pdk.TGIS_PvlForm):
         self.check_box = pdk.TGIS_PvlCheckBox(self.toolbar_buttons.Context)
         self.check_box.Caption = "Change pixels"
         self.check_box.Place(100, 22, None, 330, None, 3)
-        self.check_box.OnClick = self.chkChangePixels_click
+        self.check_box.OnChange = self.chkChangePixels_change
 
         self.status_bar_bottom = pdk.TGIS_PvlPanel(self.Context)
         self.status_bar_bottom.Place(592, 19, None, 0, None, 480)
         self.status_bar_bottom.Align = "Bottom"
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
 
@@ -119,7 +119,7 @@ class PixelOperationsForm(pdk.TGIS_PvlForm):
     def btnFullExtent_click(self, _sender):
         self.GIS.FullExtent()
 
-    def chkChangePixels_click(self, _sender):
+    def chkChangePixels_change(self, _sender):
         if self.GIS.IsEmpty:
             return
         lp = self.GIS.Items[0]

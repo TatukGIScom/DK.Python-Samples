@@ -26,7 +26,7 @@ class Buffers2Form(pdk.TGIS_PvlForm):
         self.btnPlus.Caption = " + "
         self.btnPlus.OnClick = self.btnPlus_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 29
         self.GIS.Width = 477

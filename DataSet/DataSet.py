@@ -11,7 +11,7 @@ class DataSetForm(pdk.TGIS_PvlForm):
         self.dataGrid1.Place(354, 466, None, 238, None, 0)
         self.dataGrid1.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 0
         self.GIS.Width = 233

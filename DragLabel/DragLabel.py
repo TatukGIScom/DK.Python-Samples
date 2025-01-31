@@ -30,7 +30,7 @@ class DragLabelForm(pdk.TGIS_PvlForm):
         self.status_label = pdk.TGIS_PvlLabel(self.status_bar.Context)
         self.status_label.Place(100, 19, None, 3, None, 0)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
         self.GIS.OnMouseDown = self.GIS_MouseDown
         self.GIS.OnMouseMove = self.GIS_MouseMove

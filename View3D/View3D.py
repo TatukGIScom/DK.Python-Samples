@@ -1,5 +1,6 @@
 import tatukgis_pdk as pdk
 import math
+import sys
 
 class View3DForm(pdk.TGIS_PvlForm):
     def __init__(self, _owner):
@@ -8,7 +9,7 @@ class View3DForm(pdk.TGIS_PvlForm):
         self.ClientHeight = 692
 
         self.toolbar_buttons = pdk.TGIS_PvlPanel(self.Context)
-        self.toolbar_buttons.Place(935, 57, None, 12, None, 12)
+        self.toolbar_buttons.Place(935, 57, None, 0, None, 12)
 
         self.btnOpenBuildings = pdk.TGIS_PvlButton(self.toolbar_buttons.Context)
         self.btnOpenBuildings.Place(131, 23, None, 13, None, 3)
@@ -90,13 +91,15 @@ class View3DForm(pdk.TGIS_PvlForm):
         self.btnInvertMultipatchLights.Enabled = False
         self.btnInvertMultipatchLights.OnClick = self.btnInvertMultipatchLights_click
 
+        script_path = sys.path[0]
+
         self.Image1 = pdk.TGIS_Bitmap()
-        self.Image1.LoadFromFile("Resources/pictureBox1.Image.bmp")
+        self.Image1.LoadFromFile(script_path + "/Resources/pictureBox1.bmp")
 
         self.Image2 = pdk.TGIS_Bitmap()
-        self.Image2.LoadFromFile("Resources/pictureBox2.Image.bmp")
+        self.Image2.LoadFromFile(script_path + "/Resources/pictureBox2.bmp")
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 152
         self.GIS.Top = 48
         self.GIS.Width = 604
@@ -104,6 +107,11 @@ class View3DForm(pdk.TGIS_PvlForm):
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
         self.GIS.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Top,
                             pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
+        self.GIS.OnMouseDown = self.GISMouseDown
+        self.GIS.OnMouseWheel = self.GISMouseWheel
+        self.GIS.OnMouseMove = self.GISMouseMove
+
+        self.MousePosition = pdk.TGIS_Point()
 
         self.GIS_legend = pdk.TGIS_PvlControlLegend(self.Context)
         self.GIS_legend.Mode = pdk.TGIS_ControlLegendMode().Layers
@@ -186,8 +194,8 @@ class View3DForm(pdk.TGIS_PvlForm):
 
         if lv.Params.Area.Bitmap is None:
             self.btnTextures.Caption = "Hide Textures"
-            lv.Params.Area.Bitmap = self.Image1
-            lv.Params.Area.OutlineBitmap = self.Image2
+            lv.Params.Area.Bitmap = self.Image2
+            lv.Params.Area.OutlineBitmap = self.Image1
         else:
             self.btnTextures.Caption = "Show Textures"
             lv.Params.Area.Bitmap = None
@@ -409,7 +417,44 @@ class View3DForm(pdk.TGIS_PvlForm):
         else:
             self.GIS.Viewer3D.FastMode = False
             self.btnRefresh.Caption = "Lock Refresh"
+    
+    def GISMouseMove(self, _sender,  _shift, x, y):
+        self.MousePosition.X = x
+        self.MousePosition.Y = y
+        return
 
+    def GISMouseDown(self, _sender, _button, _shift, x, y):
+        if self.GIS.IsEmpty:
+            return
+        if self.GIS.InPaint:
+            return
+
+        if self.GIS.View3D and self.GIS.Viewer3D.Mode == pdk.TGIS_Viewer3DMode().Select:
+            precision = 20
+            shp = self.GIS.Locate(pdk.TPoint(int(x), int(y)), precision)    
+            
+            if not shp:
+                return
+            
+            shp.IsSelected = not shp.IsSelected
+            self.GIS.Viewer3D.UpdateAllSelectedObjects
+    
+    def GISMouseWheel(self, _sender, _shift, delta, handled):
+        if self.GIS.IsEmpty:
+            return
+        
+        if self.GIS.View3D:
+            cam = self.GIS.Viewer3D.CameraPosition
+            if delta > 0:
+                cam.Z = cam.Z * ( 1 + 0.05 )
+            else:
+                cam.Z = cam.Z / ( 1 + 0.05 )
+            self.GIS.Viewer3D.CameraPosition = cam
+        else:
+            if delta > 0:
+                self.GIS.ZoomBy(2/3, self.MousePosition.X, self.MousePosition.Y)
+            else:
+                self.GIS.ZoomBy(3/2, self.MousePosition.X, self.MousePosition.Y)
 
 def main():
     frm = View3DForm(None)

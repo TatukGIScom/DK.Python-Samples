@@ -17,26 +17,26 @@ class ShapeOperationsForm(pdk.TGIS_PvlForm):
         self.OnShow = self.form_show
 
         self.toolbar_buttons = pdk.TGIS_PvlPanel(self.Context)
-        self.toolbar_buttons.Place(592, 29, None, 0, None, 0)
+        self.toolbar_buttons.Place(592, 40, None, 0, None, 0)
 
         self.rbRotate = pdk.TGIS_PvlRadioButton(self.toolbar_buttons.Context)
-        self.rbRotate.Place(57, 17, None, 12, None, 7)
+        self.rbRotate.Place(57, 25, None, 12, None, 7)
         self.rbRotate.Caption = "Rotate"
         self.rbRotate.Checked = True
-        self.rbRotate.OnClick = self.rbRotate_click
+        self.rbRotate.OnChange = self.rbRotate_change
 
         self.rbScale = pdk.TGIS_PvlRadioButton(self.toolbar_buttons.Context)
-        self.rbScale.Place(56, 17, None, 75, None, 7)
+        self.rbScale.Place(56, 25, None, 75, None, 7)
         self.rbScale.Caption = "Scale"
-        self.rbScale.OnClick = self.rbScale_click
+        self.rbScale.OnChange = self.rbScale_change
 
         self.rbMove = pdk.TGIS_PvlRadioButton(self.toolbar_buttons.Context)
-        self.rbMove.Place(56, 17, None, 133, None, 7)
+        self.rbMove.Place(56, 25, None, 133, None, 7)
         self.rbMove.Caption = "Move"
-        self.rbMove.OnClick = self.rbMove_click
+        self.rbMove.OnChange = self.rbMove_change
 
         self.lbHint = pdk.TGIS_PvlLabel(self.toolbar_buttons.Context)
-        self.lbHint.Place(400, 13, None, 197, None, 9)
+        self.lbHint.Place(400, 25, None, 197, None, 7)
         self.lbHint.Caption = "Select shape on the map to start transform"
 
         self.status_bar_bottom = pdk.TGIS_PvlPanel(self.Context)
@@ -47,9 +47,9 @@ class ShapeOperationsForm(pdk.TGIS_PvlForm):
         self.lblAltitude.Place(300, 19, None, 3, None, 0)
         self.lblAltitude.Caption = ""
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
-        self.GIS.Top = 30
+        self.GIS.Top = 35
         self.GIS.Width = 600
         self.GIS.Height = 440
         self.GIS.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Top,
@@ -171,21 +171,30 @@ class ShapeOperationsForm(pdk.TGIS_PvlForm):
 
         self.handleMouseMove = not self.handleMouseMove
 
-    def rbRotate_click(self, _sender):
+    def rbRotate_change(self, _sender):
+        if not self.rbRotate.Checked:
+            return
+        
         self.lbHint.Caption = 'Select shape to start rotating'
         if self.currShape:
             self.GIS.InvalidateTopmost()
             self.currShape = None
             self.handleMouseMove = False
 
-    def rbScale_click(self, _sender):
+    def rbScale_change(self, _sender):
+        if not self.rbScale.Checked:
+            return
+
         self.lbHint.Caption = 'Select shape to start scaling'
         if self.currShape:
             self.GIS.InvalidateTopmost()
             self.currShape = None
             self.handleMouseMove = False
 
-    def rbMove_click(self, _sender):
+    def rbMove_change(self, _sender):
+        if not self.rbMove.Checked:
+            return        
+
         self.lbHint.Caption = 'Select shape to start moving'
         if self.currShape:
             self.GIS.InvalidateTopmost()

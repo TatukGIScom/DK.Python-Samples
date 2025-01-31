@@ -33,7 +33,7 @@ class TransformForm(pdk.TGIS_PvlForm):
         self.lblCoordinates.Place(200, 20, None, 140, None, 480)
         self.lblCoordinates.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Bottom)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 130
         self.GIS.Top = 0
         self.GIS.Width = 480

@@ -45,7 +45,7 @@ class HelloDKForm(pdk.TGIS_PvlForm):
         self.btnFindShape.Caption = "Find Shape"
         self.btnFindShape.OnClick = self.btnFindShape_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
         self.GIS.TapSimpleEvent = self.GISTapSimpleEvent
 

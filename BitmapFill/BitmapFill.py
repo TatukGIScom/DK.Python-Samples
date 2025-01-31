@@ -14,7 +14,7 @@ class BitmapFillForm(pdk.TGIS_PvlForm):
         self.ClientHeight = 500
         self.OnShow = self.form_show
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
         self.GIS.Align = "Client"
 

@@ -22,7 +22,7 @@ class ProjectionsForm(pdk.TGIS_PvlForm):
         self.btnZoom.Caption = "Zooming"
         self.btnZoom.OnClick = self.btnZoom_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
 
     def form_show(self, _sender):

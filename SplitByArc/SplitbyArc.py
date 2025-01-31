@@ -33,7 +33,7 @@ class SplitByArcForm(pdk.TGIS_PvlForm):
         self.lbInfo.Place(400, 19, None, 3, None, 0)
         self.lbInfo.Caption = ""
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 185
         self.GIS.Top = 0
         self.GIS.Width = 407

@@ -46,7 +46,7 @@ class MeasureForm(pdk.TGIS_PvlForm):
         self.edtArea = pdk.TGIS_PvlEdit(self.panel_controls.Context)
         self.edtArea.Place(191, 20, None, 6, None, 99)
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 15
         self.GIS.Top = 45
         self.GIS.Width = 453

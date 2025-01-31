@@ -12,7 +12,7 @@ class RelateForm(pdk.TGIS_PvlForm):
         self.ClientWidth = 750
         self.ClientHeight = 500
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 200
         self.GIS.Top = -100
         self.GIS.Width = 550

@@ -59,7 +59,7 @@ class JoinAndChartForm(pdk.TGIS_PvlForm):
         self.status_bar_bottom.Place(592, 19, None, 0, None, 482)
         self.status_bar_bottom.Align = "Bottom"
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = -2
         self.GIS.Top = 30
         self.GIS.Width = 700

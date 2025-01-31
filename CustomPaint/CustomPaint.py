@@ -21,7 +21,7 @@ class CustomPaintForm(pdk.TGIS_PvlForm):
         self.ClientHeight = 561
         self.OnShow = self.form_show
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 41
         self.GIS.Height = 520

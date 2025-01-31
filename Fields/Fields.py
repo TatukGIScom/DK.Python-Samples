@@ -8,25 +8,20 @@ class FieldsForm(pdk.TGIS_PvlForm):
         self.ClientWidth = 624
         self.ClientHeight = 514
 
-        self.toolbar_buttons = pdk.TGIS_PvlPanel(self.Context)
-        self.toolbar_buttons.Place(624, 514, None, 0, None, 0)
+        self.pnlButtons = pdk.TGIS_PvlPanel(self.Context)
+        self.pnlButtons.Place(624, 514, None, 0, None, 0)
 
-        self.btnCreateLayer = pdk.TGIS_PvlButton(self.toolbar_buttons.Context)
+        self.btnCreateLayer = pdk.TGIS_PvlButton(self.pnlButtons.Context)
         self.btnCreateLayer.Place(75, 23, None, 0, None, 0)
         self.btnCreateLayer.Caption = "Create Layer"
         self.btnCreateLayer.OnClick = self.btnCreateLayer_click
 
-        self.btnUpdate = pdk.TGIS_PvlButton(self.toolbar_buttons.Context)
-        self.btnUpdate.Place(75, 23, None, 170, None, 0)
-        self.btnUpdate.Caption = "Update"
-        self.btnUpdate.OnClick = self.btnUpdate_click
+        self.chkUseSymbols = pdk.TGIS_PvlCheckBox(self.pnlButtons.Context)
+        self.chkUseSymbols.Place(87, 17, None, 81, None, 4)
+        self.chkUseSymbols.Caption = "Use Symbol"
+        self.chkUseSymbols.Checked = False
 
-        self.chckbxUseSymbols = pdk.TGIS_PvlCheckBox(self.toolbar_buttons.Context)
-        self.chckbxUseSymbols.Place(87, 17, None, 81, None, 4)
-        self.chckbxUseSymbols.Caption = "Use Symbol"
-        self.chckbxUseSymbols.Checked = False
-
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 141
         self.GIS.Top = 27
         self.GIS.Width = 483
@@ -40,21 +35,19 @@ class FieldsForm(pdk.TGIS_PvlForm):
         self.GIS_legend.Place(141, 320, None, 0, None, 27)
         self.GIS_legend.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Bottom)
 
-        self.dataGrid1 = pdk.TGIS_PvlGrid(self.Context)
-        self.dataGrid1.Place(624, 145, None, 0, None, 347)
-        self.dataGrid1.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
+        self.dataGrid = pdk.TGIS_PvlGrid(self.Context)
+        self.dataGrid.Place(624, 145, None, 0, None, 347)
+        self.dataGrid.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
         self.GIS_DataSet1 = pdk.TGIS_DataSet(None)
+        self.GIS_DataSet1.AfterPost = self.GIS_DataSet1_afterPost
 
-        self.stsbr1 = pdk.TGIS_PvlPanel(self.Context)
-        self.stsbr1.Place(624, 22, None, 0, None, 492)
-        self.stsbr1.Align = "Bottom"
+        self.pnlStatus = pdk.TGIS_PvlPanel(self.Context)
+        self.pnlStatus.Place(624, 22, None, 0, None, 492)
+        self.pnlStatus.Align = "Bottom"
 
-        self.lblMsg = pdk.TGIS_PvlLabel(self.stsbr1.Context)
-        self.lblMsg.Place(400, 19, None, 3, None, 0)
-        self.lblMsg.Caption = "Open a layer properties form to change parameters"
-
-    def btnUpdate_click(self, _sender):
-        self.GIS.InvalidateWholeMap()
+        self.lblMessage = pdk.TGIS_PvlLabel(self.pnlStatus.Context)
+        self.lblMessage.Place(400, 19, None, 3, None, 0)
+        self.lblMessage.Caption = "Open a layer properties form to change parameters"
 
     def btnCreateLayer_click(self, _sender):
         self.GIS.Close()
@@ -116,7 +109,7 @@ class FieldsForm(pdk.TGIS_PvlForm):
             an = randint(0, 360)
             shp.SetField("rotateLabel", an)
             shp.SetField("rotateSymbol", an)
-            shp.SetField("size", 20 * i)
+            shp.SetField("size", i)
             shp.SetField("color", (randint(0, 256) << 16) + (randint(0, 256) << 8) + randint(0, 256))
             shp.SetField("outlinecolor", (randint(0, 256) << 16) + (randint(0, 256) << 8) + randint(0, 256))
             shp.SetField("scale", math.pi / 180)
@@ -138,13 +131,13 @@ class FieldsForm(pdk.TGIS_PvlForm):
         lv.Params.Marker.ColorAsText = "FIELD:color"
         lv.Params.Marker.OutlineColorAsText = "FIELD:outlinecolor"
         lv.Params.Marker.OutlineWidth = 1
-        lv.Params.Marker.Size = -20
+        lv.Params.Marker.Size = 20 * 20  #converting points to twips -> 1pt = 20 twips
 
-        if self.chckbxUseSymbols.Checked:
+        if self.chkUseSymbols.Checked:
             lv.Params.Marker.Symbol = pdk.TGIS_Utils().SymbolList.Prepare(
                 pdk.TGIS_Utils.GisSamplesDataDirDownload() + "Symbols/2267.cgm"
             )
-            lv.Params.Marker.SizeAsText = "FIELD:size:1 px"
+            lv.Params.Marker.SizeAsText = "FIELD:size:1 dip"
             lv.Params.Marker.SymbolRotateAsText = "FIELD:rotateSymbol"
 
         lv.Params.Labels.Field = "label"
@@ -155,19 +148,18 @@ class FieldsForm(pdk.TGIS_PvlForm):
         lv.Params.Labels.FontColorAsText = "FIELD:color"
         lv.Params.Labels.RotateAsText = "FIELD:rotateLabel:1 deg"
 
-        if self.chckbxUseSymbols.Checked:
+        if self.chkUseSymbols.Checked:
             lv.Params.Line.Symbol = pdk.TGIS_Utils().SymbolList.Prepare(
                 pdk.TGIS_Utils.GisSamplesDataDirDownload() + "Symbols/1301.cgm"
             )
             lv.Params.Line.SymbolRotateAsText = "FIELD:rotateSymbol:1 deg"
         
-        lv.Params.Line.Width = -10
         lv.Params.Line.ColorAsText = "FIELD:color"
         lv.Params.Line.OutlineColorAsText = "FIELD:outlinecolor"
-        lv.Params.Line.WidthAsText = "FIELD:size:1 px"
+        lv.Params.Line.WidthAsText = "FIELD:size:1 dip"
 
         lv.Params.Area.SymbolRotateAsText = "FIELD:rotateSymbol:1 deg"
-        if self.chckbxUseSymbols.Checked:
+        if self.chkUseSymbols.Checked:
             lv.Params.Area.Symbol = pdk.TGIS_Utils().SymbolList.Prepare(
                 pdk.TGIS_Utils.GisSamplesDataDirDownload() + "Symbols/1301.cgm"
             )
@@ -177,10 +169,11 @@ class FieldsForm(pdk.TGIS_PvlForm):
         self.GIS.Add(lv)
         self.GIS.FullExtent()
         self.GIS_legend.GIS_Layer = lv
-        # self.GIS_legend.Update()
         self.GIS_DataSet1.Open(lv, lv.Extent)
-        # pdk.TGIS_PvlBindingHelper.Bind(self, self.GIS_DataSet1, self.dataGrid1)
-        self.dataGrid1.DataSet = self.GIS_DataSet1
+        self.dataGrid.DataSet = self.GIS_DataSet1
+
+    def GIS_DataSet1_afterPost(self, _sender):
+        self.GIS.InvalidateWholeMap()
 
 def main():
     frm = FieldsForm(None)

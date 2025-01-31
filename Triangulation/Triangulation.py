@@ -39,13 +39,13 @@ class TriangulationForm(pdk.TGIS_PvlForm):
         self.rbtnVoronoi.Place(120, 17, None, 6, None, 19)
         self.rbtnVoronoi.Caption = "Voronoi Diagram"
         self.rbtnVoronoi.Checked = True
-        self.rbtnVoronoi.OnClick = self.rbtnVoronoi_click
+        self.rbtnVoronoi.OnChange = self.rbtnVoronoi_change
 
         self.rbtnDelaunay = pdk.TGIS_PvlRadioButton(self.grpbxResult.Context)
         self.rbtnDelaunay.Place(120, 17, None, 6, None, 42)
         self.rbtnDelaunay.Caption = "Delaunay Diagram"
         self.rbtnDelaunay.Checked = False
-        self.rbtnDelaunay.OnClick = self.rbtnDelaunay_click
+        self.rbtnDelaunay.OnChange = self.rbtnDelaunay_change
 
         self.lblLayer = pdk.TGIS_PvlLabel(self.grpbxResult.Context)
         self.lblLayer.Place(68, 13, None, 6, None, 68)
@@ -60,7 +60,7 @@ class TriangulationForm(pdk.TGIS_PvlForm):
         self.btnGenerate.Caption = "Generate"
         self.btnGenerate.OnClick = self.btnGenerate_click
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 28
         self.GIS.Width = 424
@@ -106,10 +106,16 @@ class TriangulationForm(pdk.TGIS_PvlForm):
             return
         self.GIS.Zoom = self.GIS.Zoom / 2
 
-    def rbtnVoronoi_click(self, _sender):
+    def rbtnVoronoi_change(self, _sender):
+        if not self.rbtnVoronoi.Checked:
+            return
+        
         self.edtLayer.Text = "Voronoi"
 
-    def rbtnDelaunay_click(self, _sender):
+    def rbtnDelaunay_change(self, _sender):
+        if not self.rbtnDelaunay.Checked:
+            return
+
         self.edtLayer.Text = "Delaunay"
 
     def GIS_MouseDown(self, _sender, _button, _shift, x, y):

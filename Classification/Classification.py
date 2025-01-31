@@ -1,4 +1,5 @@
 import tatukgis_pdk as pdk
+import os.path
 
 class ClassificationForm(pdk.TGIS_PvlForm):
     RENDER_TYPE_SIZE = "Size / Width"
@@ -123,7 +124,7 @@ class ClassificationForm(pdk.TGIS_PvlForm):
         self.edtInterval.OnChange = self.do_classify_onchange
 
         self.toolbar_controls = pdk.TGIS_PvlPanel(self.Context)
-        self.toolbar_controls.Place(935, 44, None, 12, None, 65)
+        self.toolbar_controls.Place(935, 44, None, 12, None, 35)
 
         self.lblStartColor = pdk.TGIS_PvlLabel(self.toolbar_controls.Context)
         self.lblStartColor.Place(58, 13, None, 0, None, 15)
@@ -172,21 +173,21 @@ class ClassificationForm(pdk.TGIS_PvlForm):
         self.chkShowInLegend.Place(109, 17, None, 572, None, 14)
         self.chkShowInLegend.Caption = "Show in legend"
         self.chkShowInLegend.Checked = True
-        self.chkShowInLegend.OnClick = self.chkShowInLegend_change
+        self.chkShowInLegend.OnChange = self.chkShowInLegend_change
 
         self.chkUseColorRamp = pdk.TGIS_PvlCheckBox(self.toolbar_controls.Context)
         self.chkUseColorRamp.Place(107, 17, None, 683, None, 14)
         self.chkUseColorRamp.Caption = "Use color ramp"
         self.chkUseColorRamp.Checked = True
-        self.chkUseColorRamp.OnClick = self.do_classify_onchange
+        self.chkUseColorRamp.OnChange = self.chkUseColorRamp_change
 
         self.cbColorRamp = pdk.TGIS_PvlComboBox(self.toolbar_controls.Context)
         self.cbColorRamp.Place(121, 21, None, 793, None, 11)
         self.cbColorRamp.OnChange = self.do_classify_onchange
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 229
-        self.GIS.Top = 115
+        self.GIS.Top = 80
         self.GIS.Width = 718
         self.GIS.Height = 486
         self.GIS.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
@@ -195,7 +196,7 @@ class ClassificationForm(pdk.TGIS_PvlForm):
         self.GIS_legend.Mode = pdk.TGIS_ControlLegendMode().Layers
         self.GIS_legend.GIS_Viewer = self.GIS
         self.GIS_legend.Left = 12
-        self.GIS_legend.Top = 115
+        self.GIS_legend.Top = 80
         self.GIS_legend.Width = 211
         self.GIS_legend.Height = 486
         self.GIS_legend.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Bottom)
@@ -237,16 +238,16 @@ class ClassificationForm(pdk.TGIS_PvlForm):
                 self.cbColorRamp.ItemIndex = i
 
     def form_show(self, _sender):
-        self.GIS.Open(pdk.TGIS_Utils.GisSamplesDataDir() + "World/Countries/USA/States/California/Counties.shp")
+        sample_data_dir = os.path.join(pdk.TGIS_Utils.GisSamplesDataDirDownload(),
+                                       "World/Countries/USA/States/California/Counties.shp")
+        self.GIS.Open(sample_data_dir)
 
         self.fill_cb_fields()
         self.fill_cb_color_ramps()
 
     def pStartColor_click(self, _sender):
         dlg_color = pdk.TGIS_ControlColor(self)
-        color = pdk.TGIS_Color()
-        color.ARGB = self.pStartColor.Color
-        dlg_color.Color = color
+        dlg_color.Color = self.pStartColor.Color
         if dlg_color.Execute() != pdk.TGIS_PvlModalResult().OK:
             return
 
@@ -255,9 +256,7 @@ class ClassificationForm(pdk.TGIS_PvlForm):
 
     def pEndColor_click(self, _sender):
         dlg_color = pdk.TGIS_ControlColor(self)
-        color = pdk.TGIS_Color()
-        color.ARGB = self.pEndColor.Color
-        dlg_color.Color = color
+        dlg_color.Color = self.pEndColor.Color
         if dlg_color.Execute() != pdk.TGIS_PvlModalResult().OK:
             return
 
@@ -449,9 +448,11 @@ class ClassificationForm(pdk.TGIS_PvlForm):
         self.do_classify()
 
     def chkShowInLegend_change(self, _sender):
-        self.cbColorRamp.Enabled = not self.cbColorRamp.Enabled
         self.do_classify()
 
+    def chkUseColorRamp_change(self, _sender):
+        self.cbColorRamp.Enabled = self.chkUseColorRamp.Checked
+        self.do_classify()
 
 def main():
     frm = ClassificationForm(None)

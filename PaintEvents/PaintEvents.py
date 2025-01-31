@@ -30,9 +30,9 @@ class PaintEventsForm(pdk.TGIS_PvlForm):
         self.chkDrag = pdk.TGIS_PvlCheckBox(self.toolbar_buttons.Context)
         self.chkDrag.Place(121, 28, None, 132, None, 2)
         self.chkDrag.Caption = "Dragging"
-        self.chkDrag.OnClick = self.chkDrag_click
+        self.chkDrag.OnChange = self.chkDrag_change
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 0
         self.GIS.Top = 30
         self.GIS.Width = 552
@@ -52,19 +52,19 @@ class PaintEventsForm(pdk.TGIS_PvlForm):
         self.chkBeforePaintRendererEvent.Place(200, 21, None, 16, None, 21)
         self.chkBeforePaintRendererEvent.Caption = "BeforePaintRendererEvent"
         self.chkBeforePaintRendererEvent.Checked = True
-        self.chkBeforePaintRendererEvent.OnClick = self.chkBeforePaintRendererEvent_click
+        self.chkBeforePaintRendererEvent.OnChange = self.chkBeforePaintRendererEvent_change
 
         self.chkPaintExtraEvent = pdk.TGIS_PvlCheckBox(self.toolbar_checkboxes.Context)
         self.chkPaintExtraEvent.Place(200, 21, None, 16, None, 49)
         self.chkPaintExtraEvent.Caption = "PaintExtraEvent"
         self.chkPaintExtraEvent.Checked = True
-        self.chkPaintExtraEvent.OnClick = self.chkPaintExtraEvent_click
+        self.chkPaintExtraEvent.OnChange = self.chkPaintExtraEvent_change
 
         self.chkAfterPaintRendererEvent = pdk.TGIS_PvlCheckBox(self.toolbar_checkboxes.Context)
         self.chkAfterPaintRendererEvent.Place(200, 21, None, 16, None, 77)
         self.chkAfterPaintRendererEvent.Caption = "AfterPaintRendererEvent"
         self.chkAfterPaintRendererEvent.Checked = True
-        self.chkAfterPaintRendererEvent.OnClick = self.chkAfterPaintRendererEvent_click
+        self.chkAfterPaintRendererEvent.OnChange = self.chkAfterPaintRendererEvent_change
 
         self.btnTestPrintBmp = pdk.TGIS_PvlButton(self.toolbar_checkboxes.Context)
         self.btnTestPrintBmp.Place(188, 28, None, 16, None, 188)
@@ -86,7 +86,7 @@ class PaintEventsForm(pdk.TGIS_PvlForm):
         self.GIS.FullExtent()
         self.center_ptg = self.GIS.CenterPtg
 
-    def chkDrag_click(self, _sender):
+    def chkDrag_change(self, _sender):
         if self.chkDrag.Checked:
             self.GIS.Mode = pdk.TGIS_ViewerMode().Drag
         else:
@@ -105,26 +105,25 @@ class PaintEventsForm(pdk.TGIS_PvlForm):
     def btnFullExtent_click(self, _sender):
         self.GIS.FullExtent()
 
-    def chkBeforePaintRendererEvent_click(self, _sender):
+    def chkBeforePaintRendererEvent_change(self, _sender):
         if self.chkBeforePaintRendererEvent.Checked:
+            self.GIS.BeforePaintRendererEvent = self.GIS_BeforePaintRendererEvent            
+        else:
             self.GIS.BeforePaintRendererEvent = None
-        else:
-            self.GIS.BeforePaintRendererEvent = self.GIS_BeforePaintRendererEvent
-
         self.GIS.InvalidateWholeMap()
 
-    def chkPaintExtraEvent_click(self, _sender):
+    def chkPaintExtraEvent_change(self, _sender):
         if self.chkPaintExtraEvent.Checked:
-            self.GIS.PaintExtraEvent = None
-        else:
             self.GIS.PaintExtraEvent = self.GIS_PaintExtraEvent
+        else:
+            self.GIS.PaintExtraEvent = None
         self.GIS.InvalidateWholeMap()
 
-    def chkAfterPaintRendererEvent_click(self, _sender):
+    def chkAfterPaintRendererEvent_change(self, _sender):
         if self.chkAfterPaintRendererEvent.Checked:
-            self.GIS.AfterPaintRendererEvent = None
-        else:
             self.GIS.AfterPaintRendererEvent = self.GIS_AfterPaintRendererEvent
+        else:
+            self.GIS.AfterPaintRendererEvent = None
         self.GIS.InvalidateWholeMap()
 
     def GIS_BeforePaintRendererEvent(self, _sender, rdr: pdk.TGIS_RendererAbstract, _mode):

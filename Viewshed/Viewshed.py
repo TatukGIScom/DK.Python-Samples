@@ -15,7 +15,7 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         self.ClientHeight = 393
         self.OnShow = self.form_show
 
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 190
         self.GIS.Top = 28
         self.GIS.Width = 560
@@ -44,14 +44,14 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         self.rbZoom.Place(52, 17, None, 16, None, 19)
         self.rbZoom.Caption = "Zoom"
         self.rbZoom.Group = "G1"
-        self.rbZoom.OnClick = self.rbZoom_click
+        self.rbZoom.OnChange = self.rbZoom_change
 
         self.rbAddObserver = pdk.TGIS_PvlRadioButton(self.gbMapMode.Context)
         self.rbAddObserver.Place(90, 17, None, 16, None, 42)
         self.rbAddObserver.Caption = "Add Observer"
         self.rbAddObserver.Checked = True
         self.rbAddObserver.Group = "G1"
-        self.rbAddObserver.OnClick = self.rbAddObserver_click
+        self.rbAddObserver.OnChange = self.rbAddObserver_change
 
         self.gbVisibleLayer = pdk.TGIS_PvlGroupBox(self.Context)
         self.gbVisibleLayer.Place(168, 94, None, 12, None, 145)
@@ -61,17 +61,17 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         self.rbViewshedBinary.Place(140, 17, None, 16, None, 19)
         self.rbViewshedBinary.Caption = "Viewshed (binary)"
         self.rbViewshedBinary.Checked = True
-        self.rbViewshedBinary.OnClick = self.rbViewshedBinary_click
+        self.rbViewshedBinary.OnChange = self.setLayerActive
 
         self.rbViewshedFreq = pdk.TGIS_PvlRadioButton(self.gbVisibleLayer.Context)
         self.rbViewshedFreq.Place(140, 17, None, 16, None, 42)
         self.rbViewshedFreq.Caption = "Viewshed (frequency)"
-        self.rbViewshedFreq.OnClick = self.rbViewshedFreq_click
+        self.rbViewshedFreq.OnChange = self.setLayerActive
 
         self.rbAGL = pdk.TGIS_PvlRadioButton(self.gbVisibleLayer.Context)
         self.rbAGL.Place(140, 17, None, 16, None, 65)
         self.rbAGL.Caption = "Above-Ground-Level"
-        self.rbAGL.OnClick = self.rbAGL_click
+        self.rbAGL.OnChange = self.setLayerActive
 
         self.lblHint = pdk.TGIS_PvlLabel(self.Context)
         self.lblHint.Place(600, 16, None, 190, None, 9)
@@ -289,7 +289,7 @@ class ViewshedForm(pdk.TGIS_PvlForm):
                 txt += f"Above-Ground-Level: {val}"
         self.lblMsg.Caption = txt
 
-    def setLayerActive(self):
+    def setLayerActive(self, _sender):
         self.GIS.Lock()
         try:
             self.makeViewshedRamp()
@@ -301,25 +301,16 @@ class ViewshedForm(pdk.TGIS_PvlForm):
             self.GIS.Unlock()
         self.showComment()
 
-    def rbViewshedBinary_click(self, _sender):
-        self.setLayerActive()
-
-    def rbViewshedFreq_click(self, _sender):
-        self.setLayerActive()
-
-    def rbAGL_click(self, _sender):
-        self.setLayerActive()
-
-    def rbAddObserver_click(self, _sender):
+    def rbAddObserver_change(self, _sender):
         if self.GIS.IsEmpty:
             return
         self.GIS.Mode = pdk.TGIS_ViewerMode().UserDefined
 
-    def rbZoom_click(self, _sender):
+    def rbZoom_change(self, _sender):
         if self.GIS.IsEmpty:
             return
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
-
+        
     def btnFullExtent_click(self, _sender):
         self.GIS.FullExtent()
 

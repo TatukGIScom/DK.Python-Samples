@@ -27,7 +27,7 @@ class RendererForm(pdk.TGIS_PvlForm):
         self.btnDrag.Caption = "Dragging"
         self.btnDrag.OnClick = self.btnDrag_click
         
-        self.GIS = pdk.TGIS_PvlViewerWnd(self.Context)
+        self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Align = "Client"
 
     def btnOpen_click(self, _sender):
