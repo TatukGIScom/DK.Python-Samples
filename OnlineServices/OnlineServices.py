@@ -57,6 +57,7 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
         self.grpbxRouting = pdk.TGIS_PvlGroupBox(self.Context)
         self.grpbxRouting.Caption = "Routing"
         self.grpbxRouting.Place(242, 295, None, 8, None, 166)
+        self.grpbxRouting.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Bottom)
 
         self.lblRoutingProfile = pdk.TGIS_PvlLabel(self.grpbxRouting.Context)
         self.lblRoutingProfile.Place(39, 13, None, 11, None, 24)
@@ -80,27 +81,32 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
         self.rbtnRoutingProfileFoot.Caption = "Foot"
         self.rbtnRoutingProfileFoot.Group = self.rdbgrp1
 
-        self.strgrdRouting = pdk.TGIS_PvlGrid(self.grpbxRouting.Context)
-        self.strgrdRouting.Place(222, 206, None, 11, None, 45)
+        self.grdRouting = pdk.TGIS_PvlGrid(self.grpbxRouting.Context)
+        self.grdRouting.Place(222, 206, None, 11, None, 45)
+        self.grdRouting.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Bottom)
 
         self.btnRoutingAdd = pdk.TGIS_PvlButton(self.grpbxRouting.Context)
         self.btnRoutingAdd.Place(23, 23, None, 11, None, 257)
         self.btnRoutingAdd.Caption = "+"
         self.btnRoutingAdd.OnClick = self.btnRoutingAdd_click
+        self.btnRoutingAdd.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Bottom)
 
         self.btnRoutingDelete = pdk.TGIS_PvlButton(self.grpbxRouting.Context)
         self.btnRoutingDelete.Place(23, 23, None, 40, None, 257)
         self.btnRoutingDelete.Caption = "-"
         self.btnRoutingDelete.OnClick = self.btnRoutingDelete_click
+        self.btnRoutingDelete.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Bottom)
 
         self.btnRouting = pdk.TGIS_PvlButton(self.grpbxRouting.Context)
         self.btnRouting.Place(75, 23, None, 158, None, 257)
         self.btnRouting.Caption = "Find"
         self.btnRouting.OnClick = self.btnRouting_click
+        self.btnRouting.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Bottom)
 
         self.grpbxIsochrone = pdk.TGIS_PvlGroupBox(self.Context)
         self.grpbxIsochrone.Caption = "Isochrone"
         self.grpbxIsochrone.Place(242, 161, None, 8, None, 467)
+        self.grpbxIsochrone.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Bottom)
 
         self.lblIsochroneProfile = pdk.TGIS_PvlLabel(self.grpbxIsochrone.Context)
         self.lblIsochroneProfile.Place(39, 13, None, 11, None, 24)
@@ -159,6 +165,7 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
         self.grpbxRoutingDir = pdk.TGIS_PvlGroupBox(self.Context)
         self.grpbxRoutingDir.Caption = "Routing directions"
         self.grpbxRoutingDir.Place(203, 620, None, 902, None, 8)
+        self.grpbxRoutingDir.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
 
         self.lblRoutingDirDist = pdk.TGIS_PvlLabel(self.grpbxRoutingDir.Context)
         self.lblRoutingDirDist.Place(186, 13, None, 16, None, 22)
@@ -172,9 +179,10 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
         self.lblRoutingDirInfo.Place(109, 13, None, 16, None, 63)
         self.lblRoutingDirInfo.Caption = "Click to zoom:"
 
-        self.strgrdRoutingDir = pdk.TGIS_PvlGrid(self.grpbxRoutingDir.Context)
-        self.strgrdRoutingDir.Place(180, 527, None, 12, None, 79)
-        self.strgrdRoutingDir.OnClick = self.strgrdRoutingDir_click
+        self.grdRoutingDirections = pdk.TGIS_PvlGrid(self.grpbxRoutingDir.Context)
+        self.grdRoutingDirections.Place(180, 527, None, 12, None, 79)
+        self.grdRoutingDirections.SelectEvent = self.strgrdRoutingDir_click
+        self.grdRoutingDirections.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
 
         self.GIS = pdk.TGIS_ViewerWnd(self.Context)
         self.GIS.Left = 256
@@ -182,32 +190,34 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
         self.GIS.Width = 640
         self.GIS.Height = 640
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
+        self.GIS.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
 
         self.GIS_ControlScale = pdk.TGIS_PvlControlScale(self.Context)
         self.GIS_ControlScale.GIS_Viewer = self.GIS
+        self.GIS_ControlScale.Anchors = (pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
         self.GIS_ControlScale.Place(185, 40, None, 455, None, 597)
 
         self.shpList = []
 
     def form_show(self, _sender):
-        col1 = self.strgrdRouting.AddColumn()
+        col1 = self.grdRouting.AddColumn()
         col1.Width = 70
         col1.ReadOnly = True
         col1.Align = pdk.TGIS_PvlGridCellAlignment().Left
 
-        col2 = self.strgrdRouting.AddColumn()
+        col2 = self.grdRouting.AddColumn()
         col2.FitWidth = True
         col2.Align = pdk.TGIS_PvlGridCellAlignment().Left
 
         for i in range(3):
-            row = self.strgrdRouting.AddRow()
+            row = self.grdRouting.AddRow()
 
-        self.strgrdRouting.Cell(1, 1, "From")
-        self.strgrdRouting.Cell(2, 1, "Gdynia")
-        self.strgrdRouting.Cell(1, 2, "Through")
-        self.strgrdRouting.Cell(2, 2, "Czestochowa")
-        self.strgrdRouting.Cell(1, 3, "To")
-        self.strgrdRouting.Cell(2, 3, "Wroclaw")
+        self.grdRouting.Cell(1, 1, "From")
+        self.grdRouting.Cell(2, 1, "Gdynia")
+        self.grdRouting.Cell(1, 2, "Through")
+        self.grdRouting.Cell(2, 2, "Czestochowa")
+        self.grdRouting.Cell(1, 3, "To")
+        self.grdRouting.Cell(2, 3, "Wroclaw")
 
         tmp_style = "English"
         self.load_tiles(tmp_style)
@@ -254,9 +264,9 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
         else:
             return s + 'th'
 
-    def add_dir(self, add_dir, uid):
-        self.strgrdRoutingDir.AddRow()
-        self.strgrdRoutingDir.Cell(1, self.strgrdRoutingDir.RowsCount, add_dir)
+    def add_dir(self, direction, uid):
+        self.grdRoutingDirections.AddRow()
+        self.grdRoutingDirections.Cell(1, self.grdRoutingDirections.RowsCount, direction)
         self.shpList.append(uid)
 
     @staticmethod
@@ -359,7 +369,7 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
 
             self.lblRoutingDirDist.Caption = "Total distance: ?"
             self.lblRoutingDirTime.Caption = "Total time: ?"
-            self.strgrdRoutingDir.Clear()
+            self.grdRoutingDirections.Clear()
 
             self.GIS.Add(layer_geocoding)
 
@@ -372,22 +382,22 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
             pdk.TGIS_PvlMessages.ShowInfo("Address not found.", self.Context)
 
     def btnRoutingAdd_click(self, _sender):
-        self.strgrdRouting.Cell(1, self.strgrdRouting.RowsCount, 'Through')
-        row = self.strgrdRouting.AddRow()
+        self.grdRouting.Cell(1, self.grdRouting.RowsCount, 'Through')
+        row = self.grdRouting.AddRow()
         row.Column(1, "To")
         row.Column(2, "")
 
     def btnRoutingDelete_click(self, _sender):
-        if self.strgrdRouting.RowsCount == 3:
+        if self.grdRouting.RowsCount == 3:
            return
-        self.strgrdRouting.Cell(1, self.strgrdRouting.RowsCount-1, "To")
-        self.strgrdRouting.DeleteRow(self.strgrdRouting.RowsCount)
+        self.grdRouting.Cell(1, self.grdRouting.RowsCount - 1, "To")
+        self.grdRouting.DeleteRow(self.grdRouting.RowsCount)
 
     def btnRouting_click(self, _sender):
         self.reset_layers()
 
-        for i in range(1, self.strgrdRouting.RowsCount):
-            if not self.strgrdRouting.Row(i).Column(2):
+        for i in range(1, self.grdRouting.RowsCount):
+            if not self.grdRouting.Row(i).Column(2):
                 pdk.TGIS_PvlMessages.ShowInfo('Address not specified.', self.Context)
                 return
 
@@ -401,8 +411,8 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
         elif self.rbtnRoutingProfileFoot.Checked:
             osm_routing.Profile = pdk.TGIS_OSMRoutingProfile().Foot
 
-        for i in range(1, self.strgrdRouting.RowsCount+1):
-            names.Add(self.strgrdRouting.Cell(2, i))
+        for i in range(1, self.grdRouting.RowsCount + 1):
+            names.Add(self.grdRouting.Cell(2, i))
 
         layer_routing = osm_routing.Route(names)
         if layer_routing is not None:
@@ -446,55 +456,56 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
                 self.lblRoutingDirTime.Caption = "Total time: " + dist_str
 
                 final_destination = False
-                self.strgrdRoutingDir.Clear()
+                self.grdRoutingDirections.Clear()
 
-                col1 = self.strgrdRoutingDir.AddColumn()
+                col1 = self.grdRoutingDirections.AddColumn()
                 col1.Width = 384
                 col1.ReadOnly = True
                 col1.Align = pdk.TGIS_PvlGridCellAlignment().Left
 
                 self.shpList.clear()
+                self.grdRoutingDirections.BeginUpdate()
+                try:
+                    for shp in layer_routing.Loop(layer_routing.Extent, "( type = 'route' )"):
+                        uid = shp.Uid
+                        try:
+                            i = int(shp.GetField("sign"))
+                        except ValueError:
+                            i = 0
+                        dist_str = shp.GetField("name")
 
-                for shp in layer_routing.Loop():
-                    uid = shp.Uid
-                    try:
-                        i = int(shp.GetField("sign"))
-                    except ValueError:
-                        i = 0
-                    dist_str = shp.GetField("name")
+                        direction = ""
+                        if i == -98:
+                            pass
+                        elif i == -8:
+                            pass
+                        elif i == 8:
+                            pass
+                        elif i == 5:
+                            direction = self.sign2dir(i)
+                        elif i == 6:
+                            direction = self.sign2dir(i) + self.exit_number(str(shp.GetField("exit"))) + " exit"
+                        else:
+                            direction = self.sign2dir(i)
+                            if dist_str is not None and dist_str != "":
+                                if i == 0:
+                                    direction += " on " + dist_str
+                                else:
+                                    direction += " onto " + dist_str
 
-                    direction = ""
-                    if i == -98:
-                        pass
-                    elif i == -8:
-                        pass
-                    elif i == 8:
-                        pass
-                    elif i == 5:
-                        direction = self.sign2dir(i)
-                    elif i == 6:
-                        direction = self.sign2dir(i) + self.exit_number(str(shp.GetField("exit"))) + " exit"
-                    else:
-                        direction = self.sign2dir(i)
-                        if dist_str is not None and dist_str != "":
-                            if i == 0:
-                                direction += " on " + dist_str
-                            else:
-                                direction += " onto " + dist_str
+                        if i == 5:
+                            self.add_dir(direction, uid)
+                            final_destination = True
+                            continue
 
-                    if i == 5:
-                        self.add_dir(direction, uid)
-                        final_destination = True
-                        continue
-
-                    try:
-                        dist = int(shp.GetField("distance"))
-                    except ValueError:
-                        dist = 0
-                    if dist < 1000:
-                        direction += " (" + str(dist) + " m, "
-                    else:
-                        direction += f" ({dist / 1000.0:.2f} km"
+                        try:
+                            dist = int(shp.GetField("distance"))
+                        except ValueError:
+                            dist = 0
+                        if dist < 1000:
+                            direction += " (" + str(dist) + " m, "
+                        else:
+                            direction += f" ({dist / 1000.0:.2f} km"
 
                         time = int(shp.GetField("time"))
                         hrs = int(time / 3600)
@@ -509,10 +520,12 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
 
                         self.add_dir(direction, uid)
 
-                if final_destination:
-                    self.add_dir("Reach the final destination", uid)
-                else:
-                    self.add_dir("Reach the destination", uid)
+                    if final_destination:
+                        self.add_dir("Reach the final destination", uid)
+                    else:
+                        self.add_dir("Reach the destination", uid)
+                finally:
+                    self.grdRoutingDirections.EndUpdate()
             else:
                 pdk.TGIS_PvlMessages.ShowInfo("Route not found.", self.Context)
 
@@ -547,7 +560,7 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
             self.lblRoutingDirDist.Caption = "Total distance: ?"
             self.lblRoutingDirTime.Caption = "Total time: ?"
 
-            self.strgrdRoutingDir.Clear()
+            self.grdRoutingDirections.Clear()
 
             self.GIS.Add(liso)
 
@@ -558,13 +571,16 @@ class OnlineServicesForm(pdk.TGIS_PvlForm):
         else:
             pdk.TGIS_PvlMessages.ShowInfo("Address not found.", self.Context)
 
-    def strgrdRoutingDir_click(self, _column, row):
+    def strgrdRoutingDir_click(self, _sender):
         layer_routing = self.GIS.Get("route")
-
         if layer_routing is None:
             return
 
-        shp = layer_routing.GetShape(self.shpList[row])
+        row = self.grdRoutingDirections.ActiveCell.Y
+        shp = layer_routing.GetShape(self.shpList[row-1])
+        if shp is None:
+            return
+
         self.GIS.VisibleExtent = self.resize_extent(shp.ProjectedExtent, 500.0)
 
 
