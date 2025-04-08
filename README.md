@@ -5,7 +5,8 @@
 ---
 
 This repository contains samples for the **TatukGIS Developer Kernel for Python** (**DK.Python**).
-For more information about DK.Python, visit [GitHub](https://github.com/TatukGIScom/DK.Python) page.
+
+For more information about DK.NET, visit [Documentation](https://docs.tatukgis.com/dk) and [Web site](https://www.tatukgis.com).
 
 ## Installation
 DK.Python is available on [pypi.org](https://pypi.org/project/tatukgis-pdk/).

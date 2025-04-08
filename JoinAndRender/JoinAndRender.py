@@ -136,7 +136,6 @@ class JoinAndRenderForm(pdk.TGIS_PvlForm):
         ll.Params.Labels.FontColor = pdk.TGIS_Color().White
         ll.Params.Labels.Color = pdk.TGIS_Color().Black
         ll.Params.Labels.Position = [pdk.TGIS_LabelPosition().MiddleCenter or pdk.TGIS_LabelPosition().Flow]
-        ll.Params.Chart.Size = pdk.TGIS_Utils.GIS_RENDER_SIZE()
         ll.Params.Render.StartSize = 350
         ll.Params.Render.EndSize = 1000
 

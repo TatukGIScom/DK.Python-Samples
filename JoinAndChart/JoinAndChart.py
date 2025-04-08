@@ -67,6 +67,14 @@ class JoinAndChartForm(pdk.TGIS_PvlForm):
         self.GIS.Anchors = (pdk.TGIS_PvlAnchor().Left, pdk.TGIS_PvlAnchor().Top,
                             pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
 
+        self.Legend = pdk.TGIS_ControlLegend(self.Context)
+        self.Legend.GIS_Viewer = self.GIS
+        self.Legend.Left = 500
+        self.Legend.Top = 30
+        self.Legend.Width = 100
+        self.Legend.Height = 100
+        self.Legend.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right)
+
     def form_show(self, _sender):
         self.cmbSize.ItemIndex = 0
         self.cmbValues.ItemIndex = 0
@@ -91,9 +99,6 @@ class JoinAndChartForm(pdk.TGIS_PvlForm):
         ll.Params.Labels.FontColor = pdk.TGIS_Color().White
         ll.Params.Labels.Color = pdk.TGIS_Color().Black
         ll.Params.Labels.Position = [pdk.TGIS_LabelPosition().MiddleCenter or pdk.TGIS_LabelPosition().Flow]
-        ll.Params.Chart.Size = pdk.TGIS_Utils.GIS_RENDER_SIZE()
-        ll.Params.Render.StartSize = 350
-        ll.Params.Render.EndSize = 1000
 
         self.GIS.Add(ll)
         self.GIS.FullExtent()
@@ -104,7 +109,7 @@ class JoinAndChartForm(pdk.TGIS_PvlForm):
         if self.GIS.Items.Count == 0:
             return
 
-        ll = self.GIS.Items[0]
+        ll: pdk.TGIS_LayerVector = self.GIS.Items[0]
         if ll is None:
             return
 
@@ -130,13 +135,31 @@ class JoinAndChartForm(pdk.TGIS_PvlForm):
         ll.JoinPrimary = "cntyidfp"
         ll.JoinForeign = "fips"
 
-        # render results
-        ll.Params.Render.Expression = v_size
-        ll.Params.Render.Chart = "0:0:" + v_values
+        # Set the chart style: "Pie" or "Bar"
         ll.Params.Chart.Style = pdk.TGIS_Utils.ParamChart(v_style, pdk.TGIS_ChartStyle().Pie)
+
+        # The chart size will be set by Render in the range of 350 to 1000
+        # depending on the value of the "vsize" field
+        ll.Params.Chart.Size = pdk.TGIS_Utils.GIS_RENDER_SIZE()
+        ll.Params.Render.StartSize = 350
+        ll.Params.Render.EndSize = 1000
+        ll.Params.Render.Expression = v_size
+
+        # The Renderer will create 10 zones to group field values,
+        # starting from "vmin" and edning with "vmax"
         ll.Params.Render.Zones = 10
         ll.Params.Render.MinVal = v_min
         ll.Params.Render.MaxVal = v_max
+
+        # For 'Bar' chart you can replace '0:0' by 'min:max' to set custom Y-axis limits.
+        # 'vvalues' contains list of values displayed on the chart.
+        # In this sample field names are used, e.g. 'male2000:female2000'.
+        # Values need to be divided by a colon ':'.
+        ll.Params.Render.Chart = "0:0:" + v_values
+
+        # If necessary, the chart can also be included in the legend
+        ll.Params.Chart.Legend = ll.Params.Render.Chart
+        ll.Params.Chart.ShowLegend = True
 
         self.GIS.InvalidateWholeMap()
 
