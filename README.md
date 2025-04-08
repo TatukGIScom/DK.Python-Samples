@@ -1,6 +1,6 @@
-# TatukGIS Developer Kernel for Python <img align="right" width="128" height="128" alt="DK" src="https://docs.tatukgis.com/DK11/_media/dk_logo.png">
+# TatukGIS Developer Kernel for Python <img align="right" width="128" height="128" alt="DK" src="https://docs.tatukgis.com/DK/_media/dk_logo.png">
 
-[PyPi](https://pypi.org/project/tatukgis-pdk/) | [GitHub](https://github.com/TatukGIScom/DK.Python) | **Samples** | [Discusssions](https://github.com/TatukGIScom/DK.Python/discussions) | [Documentation](https://docs.tatukgis.com/dk11) | [Web site](https://www.tatukgis.com)
+[PyPi](https://pypi.org/project/tatukgis-pdk/) | [GitHub](https://github.com/TatukGIScom/DK.Python) | **Samples** | [Discusssions](https://github.com/TatukGIScom/DK.Python/discussions) | [Documentation](https://docs.tatukgis.com/DK) | [Web site](https://www.tatukgis.com)
 
 ---
 
@@ -21,9 +21,9 @@ Import `tatukgis_pdk` into your program to get started:
 ## Useful links
 - TatukGIS Home page<br>https://tatukgis.com
 - About Developer Kernel<br>https://www.tatukgis.com/Products/Developer-Kernel/Description
-- Documentation<br>https://docs.tatukgis.com/DK11
-- API Overview<br>https://docs.tatukgis.com/DK11/guides:overview:overview
-- Samples overview<br>https://docs.tatukgis.com/DK11/samples:samples
+- Documentation<br>https://docs.tatukgis.com/DK
+- API Overview<br>https://docs.tatukgis.com/DK/guides:overview:overview
+- Samples overview<br>https://docs.tatukgis.com/DK/samples:samples
 
 ## License Terms
 
