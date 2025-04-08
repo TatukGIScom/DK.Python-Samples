@@ -20,7 +20,7 @@ Import `tatukgis_pdk` into your program to get started:
   
 ## Useful links
 - TatukGIS Home page<br>https://tatukgis.com
-- About Developer Kernel<br>https://www.tatukgis.com/Products/Developer-Kernel/Description.aspx
+- About Developer Kernel<br>https://www.tatukgis.com/Products/Developer-Kernel/Description
 - Documentation<br>https://docs.tatukgis.com/DK11
 - API Overview<br>https://docs.tatukgis.com/DK11/guides:overview:overview
 - Samples overview<br>https://docs.tatukgis.com/DK11/samples:samples
