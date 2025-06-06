@@ -330,11 +330,9 @@ class TigerGeocodingForm(pdk.TGIS_PvlForm):
         self.GIS.Zoom = 0.7 * self.GIS.Zoom
 
     def lstMemo_click(self, _sender):
-        # check if the cell can be selected
         if self.state == 1:
-            self.selectedRow = self.lstMemo.CursorPos.Y   #self.lstMemo.CaretPosition.Line
+            self.selectedRow = self.lstMemo.CursorPos.Y
             self.show_info()
-
 
 def main():
     frm = TigerGeocodingForm(None)

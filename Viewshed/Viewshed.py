@@ -44,14 +44,14 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         self.rbZoom.Place(52, 17, None, 16, None, 19)
         self.rbZoom.Caption = "Zoom"
         self.rbZoom.Group = "G1"
-        self.rbZoom.OnChange = self.rbZoom_change
+        self.rbZoom.OnClick = self.rbZoom_click
 
         self.rbAddObserver = pdk.TGIS_PvlRadioButton(self.gbMapMode.Context)
         self.rbAddObserver.Place(90, 17, None, 16, None, 42)
         self.rbAddObserver.Caption = "Add Observer"
         self.rbAddObserver.Checked = True
         self.rbAddObserver.Group = "G1"
-        self.rbAddObserver.OnChange = self.rbAddObserver_change
+        self.rbAddObserver.OnClick = self.rbAddObserver_click
 
         self.gbVisibleLayer = pdk.TGIS_PvlGroupBox(self.Context)
         self.gbVisibleLayer.Place(168, 94, None, 12, None, 145)
@@ -61,17 +61,17 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         self.rbViewshedBinary.Place(140, 17, None, 16, None, 19)
         self.rbViewshedBinary.Caption = "Viewshed (binary)"
         self.rbViewshedBinary.Checked = True
-        self.rbViewshedBinary.OnChange = self.setLayerActive
+        self.rbViewshedBinary.OnClick = self.rbViewshedBinary_click
 
         self.rbViewshedFreq = pdk.TGIS_PvlRadioButton(self.gbVisibleLayer.Context)
         self.rbViewshedFreq.Place(140, 17, None, 16, None, 42)
         self.rbViewshedFreq.Caption = "Viewshed (frequency)"
-        self.rbViewshedFreq.OnChange = self.setLayerActive
+        self.rbViewshedFreq.OnClick = self.rbViewshedFreq_click
 
         self.rbAGL = pdk.TGIS_PvlRadioButton(self.gbVisibleLayer.Context)
         self.rbAGL.Place(140, 17, None, 16, None, 65)
         self.rbAGL.Caption = "Above-Ground-Level"
-        self.rbAGL.OnChange = self.setLayerActive
+        self.rbAGL.OnClick = self.rbAGL_click
 
         self.lblHint = pdk.TGIS_PvlLabel(self.Context)
         self.lblHint.Place(600, 16, None, 190, None, 9)
@@ -289,7 +289,7 @@ class ViewshedForm(pdk.TGIS_PvlForm):
                 txt += f"Above-Ground-Level: {val}"
         self.lblMsg.Caption = txt
 
-    def setLayerActive(self, _sender):
+    def setLayerActive(self):
         self.GIS.Lock()
         try:
             self.makeViewshedRamp()
@@ -301,16 +301,45 @@ class ViewshedForm(pdk.TGIS_PvlForm):
             self.GIS.Unlock()
         self.showComment()
 
-    def rbAddObserver_change(self, _sender):
+    def rbViewshedBinary_click(self, _sender):
+        #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
+        #As so, we simulate the control being already checked in OnClick function
+        _sender.Checked = True
+        self.setLayerActive()
+        _sender.Checked = False
+
+    def rbViewshedFreq_click(self, _sender):
+        #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
+        #As so, we simulate the control being already checked in OnClick function
+        _sender.Checked = True
+        self.setLayerActive()
+        _sender.Checked = False
+
+    def rbAGL_click(self, _sender):
+        #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
+        #As so, we simulate the control being already checked in OnClick function
+        _sender.Checked = True
+        self.setLayerActive()
+        _sender.Checked = False
+
+    def rbAddObserver_click(self, _sender):
+        #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
+        #As so, we simulate the control being already checked in OnClick function
+        _sender.Checked = True
         if self.GIS.IsEmpty:
             return
         self.GIS.Mode = pdk.TGIS_ViewerMode().UserDefined
+        _sender.Checked = False
 
-    def rbZoom_change(self, _sender):
+    def rbZoom_click(self, _sender):
+        #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
+        #As so, we simulate the control being already checked in OnClick function
+        _sender.Checked = True
         if self.GIS.IsEmpty:
             return
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
-        
+        _sender.Checked = False
+
     def btnFullExtent_click(self, _sender):
         self.GIS.FullExtent()
 

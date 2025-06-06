@@ -28,27 +28,27 @@ class InterpolationForm(pdk.TGIS_PvlForm):
         self.rbIDW.Place(134, 17, None, 12, None, 30)
         self.rbIDW.Caption = "IDW Interpolation"
         self.rbIDW.Checked = True
-        self.rbIDW.OnChange = self.rbAny_change
+        self.rbIDW.OnClick = self.rbAny_click
 
         self.rbKriging = pdk.TGIS_PvlRadioButton(self.Context)
         self.rbKriging.Place(134, 17, None, 12, None, 53)
         self.rbKriging.Caption = "Kriging Interpolation"
-        self.rbKriging.OnChange = self.rbAny_change
+        self.rbKriging.OnClick = self.rbAny_click
 
         self.rbSpline = pdk.TGIS_PvlRadioButton(self.Context)
         self.rbSpline.Place(134, 17, None, 12, None, 76)
         self.rbSpline.Caption = "Spline Interpolation"
-        self.rbSpline.OnChange = self.rbAny_change
+        self.rbSpline.OnClick = self.rbAny_click
 
         self.rbHeatMap = pdk.TGIS_PvlRadioButton(self.Context)
         self.rbHeatMap.Place(134, 17, None, 12, None, 99)
         self.rbHeatMap.Caption = "Heat Map"
-        self.rbHeatMap.OnChange = self.rbAny_change
+        self.rbHeatMap.OnClick = self.rbAny_click
 
         self.rbConcentrationMap = pdk.TGIS_PvlRadioButton(self.Context)
         self.rbConcentrationMap.Place(134, 17, None, 12, None, 122)
         self.rbConcentrationMap.Caption = "Concentration Map"
-        self.rbConcentrationMap.OnChange = self.rbAny_change
+        self.rbConcentrationMap.OnClick = self.rbAny_click
 
         self.lblSemivariance = pdk.TGIS_PvlLabel(self.Context)
         self.lblSemivariance.Place(71, 13, None, 12, None, 157)
@@ -81,13 +81,17 @@ class InterpolationForm(pdk.TGIS_PvlForm):
         )
         self.GIS.CS = pdk.TGIS_CSFactory.ByEPSG(3395)
 
-    def rbAny_change(self, _sender): 
+    def rbAny_click(self, _sender): 
+        #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
+        #As so, we simulate the control being already checked in OnClick function
+        _sender.Checked = True
         if self.rbKriging.Checked:
             self.lblSemivariance.Visible = True
             self.cbSemivariance.Visible = True
         else:
             self.lblSemivariance.Visible = False
             self.cbSemivariance.Visible = False
+        _sender.Checked = False
 
     def doBusyEvent(self, _sender, pos, _end, _abort):
         self.progressBar1.Visible = True

@@ -99,7 +99,7 @@ class WMTSConnection(pdk.TGIS_PvlForm):
         layer_info_name = self.cbxLayers.Text
 
         tkn = pdk.TGIS_Tokenizer()
-        tkn.Execute(layer_info_name, [";"])
+        tkn.Execute(layer_info_name, ";")
         layer = tkn.Result
         layer_name = layer[0]
         image_format = layer[1]
