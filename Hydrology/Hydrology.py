@@ -248,8 +248,8 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         classifier.Method = pdk.TGIS_ClassificationMethod().GeometricalInterval
         classifier.Band = "1"
         classifier.NumClasses = 5
-        tmp = pdk.TGIS_Utils().GisColorRampList.ByName("Bathymetry2")
-        classifier.ColorRamp = tmp.RealizeColorMap(pdk.TGIS_ColorMapMode().Continuous, 0, True)
+        classifier.ColorRamp = pdk.TGIS_Utils().GisColorRampList.ByName("Bathymetry2")
+        classifier.ColorRamp.DefaultReverse = True
 
         if classifier.MustCalculateStatistics():
             flow_acc.Statistics.Calculate()
@@ -340,8 +340,8 @@ class HydrologyForm(pdk.TGIS_PvlForm):
             basins.Statistics.Calculate()
 
         classifier.EstimateNumClasses()
-        classifier.ColorRamp = pdk.TGIS_Utils().GisColorRampList.ByName("UniquePastel")\
-            .RealizeColorMap(pdk.TGIS_ColorMapMode().Discrete, classifier.NumClasses, True)
+        classifier.ColorRamp = pdk.TGIS_Utils().GisColorRampList.ByName("UniquePastel")
+        classifier.ColorRamp.DefaultColorMapMode = pdk.TGIS_ColorMapMode().Discrete
         classifier.Classify()
 
         self.GIS.InvalidateWholeMap()
@@ -409,8 +409,8 @@ class HydrologyForm(pdk.TGIS_PvlForm):
             basins_vec.Statistics.Calculate()
         classifier.EstimateNumClasses()
 
-        classifier.ColorRamp = pdk.TGIS_Utils().GisColorRampList.ByName("Unique")\
-            .RealizeColorMap(pdk.TGIS_ColorMapMode().Discrete, classifier.NumClasses, True)
+        classifier.ColorRamp = pdk.TGIS_Utils().GisColorRampList.ByName("Unique")
+        classifier.ColorRamp.DefaultColorMapMode = pdk.TGIS_ColorMapMode().Discrete
         classifier.Classify()
 
         # 2. Converting streams to polylines

@@ -365,7 +365,6 @@ class ClassificationForm(pdk.TGIS_PvlForm):
             classifier.Method = pdk.TGIS_ClassificationMethod().StandardDeviationWithCentral
         elif method == self.GIS_CLASSIFY_METHOD_UNQ:
             classifier.Method = pdk.TGIS_ClassificationMethod().Unique
-            classifier.EstimateNumClasses()
         else:
             classifier.Method = pdk.TGIS_ClassificationMethod().NaturalBreaks
 
@@ -392,11 +391,10 @@ class ClassificationForm(pdk.TGIS_PvlForm):
                 colormap_mode = pdk.TGIS_ColorMapMode().Discrete
             else:
                 colormap_mode = pdk.TGIS_ColorMapMode().Continuous
-            classifier.ColorRamp = pdk.TGIS_Utils().GisColorRampList[self.cbColorRamp.ItemIndex].RealizeColorMap(
-                colormap_mode, classifier.NumClasses, False
-            )
+            classifier.ColorRamp = pdk.TGIS_Utils().GisColorRampList[self.cbColorRamp.ItemIndex]
+            classifier.ColorRamp.DefaultColorMapMode = colormap_mode
         else:
-            classifier.ColorRamp.SetLength(0)
+            classifier.ColorRampName = ""
 
         # vector-only params 
         if isinstance(classifier, pdk.TGIS_ClassificationVector):
