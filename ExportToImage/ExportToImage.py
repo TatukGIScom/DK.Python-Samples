@@ -148,7 +148,7 @@ class ExportToImageForm(pdk.TGIS_PvlForm):
         self.btnExport.Enabled = False
 
     def btnSelectFile_click(self, _sender):
-        save_dlg = pdk.TGIS_PvlSaveDialog(self)
+        save_dlg = pdk.TGIS_PvlSaveDialog(self.Context)
 
         if self.rbImage.Checked:
             ext = ".jpg"

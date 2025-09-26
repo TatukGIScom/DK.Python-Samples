@@ -264,7 +264,7 @@ class ClassificationForm(pdk.TGIS_PvlForm):
         self.do_classify()
 
     def btnOpen_click(self, _sender):
-        dlg_open = pdk.TGIS_PvlOpenDialog(self)
+        dlg_open = pdk.TGIS_PvlOpenDialog(self.Context)
         dlg_open.Filter = pdk.TGIS_Utils.GisSupportedFiles([pdk.TGIS_FileType().All], False)
 
         if not dlg_open.Execute():

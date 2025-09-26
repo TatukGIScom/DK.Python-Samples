@@ -128,10 +128,10 @@ class TigerGeocodingForm(pdk.TGIS_PvlForm):
         # free what it wants to
         if self.layerResult is not None:
             self.GIS.Delete(self.layerResult.Name)
-            self.self.layerResult = None
+            self.layerResult = None
 
         if self.geoObj is not None:
-            self.geoObj.Dispose()
+            self.geoObj.DisposeOf()
             self.geoObj = None
 
         if self.layerSrc is not None:
