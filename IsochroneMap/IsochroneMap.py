@@ -1,6 +1,34 @@
+# =============================================================================
+# IsochroneMap sample — TatukGIS DK Python
+#
+# Demonstrates how to compute travel-time (isochrone) zones from a chosen
+# origin point on a road network using TGIS_IsochroneMap and TGIS_ShortestPath.
+#
+# Workflow:
+#   1. Load a road-network SHP layer (US TIGER edges for San Bernardino, CA).
+#   2. Style the layer to distinguish highways from local roads.
+#   3. Create an output TGIS_LayerVector for the isochrone polygons and a
+#      separate TGIS_LayerVector for the origin marker.
+#   4. Attach three network-cost callbacks:
+#        - doLinkCostEvent    : sets the base traversal cost to arc length.
+#        - doLinkType         : classifies arcs as highway (0) or local (1).
+#        - doLinkDynamic      : optionally blocks highway links at run time.
+#   5. On each mouse click (GIS_MouseDown) the user picks an origin.
+#   6. generateIsochrone calls TGIS_IsochroneMap.Generate once per zone,
+#      dividing the maximum cost so each successive call covers a wider area.
+#   7. The resulting polygons are smoothed and displayed as colour-coded zones.
+# =============================================================================
+
 import tatukgis_pdk as pdk
 
 class IsochroneMapForm(pdk.TGIS_PvlForm):
+    """
+    Main application form for the Isochrone Map sample.
+
+    Hosts the GIS viewer, routing parameter controls (road-type sliders,
+    maximum-distance edit, zone-count edit), and the origin marker.
+    Calls TGIS_IsochroneMap.Generate to produce concentric travel-time polygons.
+    """
     layerSrc: pdk.TGIS_LayerVector
     layerRoute: pdk.TGIS_LayerVector
     layerMarker: pdk.TGIS_LayerVector
@@ -96,6 +124,11 @@ class IsochroneMapForm(pdk.TGIS_PvlForm):
         self.GIS_legend.Anchors = (pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
 
     def form_show(self, _sender):
+        """
+        Loads the road-network layer on first display, configures layer rendering,
+        creates the isochrone result layer and the origin marker layer, and
+        initialises the TGIS_ShortestPath object with cost callbacks.
+        """
         self.GIS.Lock()
         try:
             self.GIS.Open(
@@ -160,6 +193,12 @@ class IsochroneMapForm(pdk.TGIS_PvlForm):
 
     @staticmethod
     def doLinkCostEvent(_sender, shape, cost, revcost):
+        """
+        Computes the base traversal cost for a road arc.
+        Uses LengthCS (real-world metres) when a coordinate system is known,
+        or raw geometry Length when the layer has no CS.
+        Both forward and reverse costs are set identically (undirected network).
+        """
         if isinstance(shape.Layer.CS, pdk.TGIS_CSUnknownCoordinateSystem):
             cost.Value = shape.Length
         else:
@@ -168,6 +207,12 @@ class IsochroneMapForm(pdk.TGIS_PvlForm):
 
     @staticmethod
     def doLinkType(_sender, shape, type_):
+        """
+        Assigns a network link type based on the MTFCC road-class attribute.
+        Links with MTFCC >= 'S1400' are classified as local roads (type = 1);
+        all others (primary/secondary highways) are classified as type 0.
+        The type index is used to look up the corresponding CostModifier.
+        """
         if shape.GetField("MTFCC") >= "S1400":
             # local roads
             type_.Value = 1
@@ -175,6 +220,12 @@ class IsochroneMapForm(pdk.TGIS_PvlForm):
             type_.Value = 0
 
     def doLinkDynamic(self, _sender, uid, cost, revcost):
+        """
+        Dynamically blocks highway arcs at traversal time when the Highways
+        track-bar is set to its minimum value (Position = 1).
+        Setting cost and revcost to -1 marks the link as impassable, effectively
+        restricting the isochrone to local roads only.
+        """
         if self.trkHighways.Position == 1:
             # block all highways
             shp = self.layerSrc.GetShape(uid)
@@ -183,15 +234,26 @@ class IsochroneMapForm(pdk.TGIS_PvlForm):
                 revcost.Value = float(-1)
 
     def btnFullExtent_click(self, _sender):
+        """Resets the visible extent to show all loaded layers."""
         self.GIS.FullExtent()
 
     def btnZoomIn_click(self, _sender):
+        """Doubles the current zoom level."""
         self.GIS.Zoom = self.GIS.Zoom * 2
 
     def btnZoomOut_click(self, _sender):
+        """Halves the current zoom level."""
         self.GIS.Zoom = self.GIS.Zoom / 2
 
     def generateIsochrone(self, _sender):
+        """
+        Generates the isochrone map from the current origin marker.
+        Reads the maximum cost and zone count from the UI controls, updates the
+        render range on the result layer, applies road-class cost modifiers from
+        the track-bars, and calls TGIS_IsochroneMap.Generate once for each zone,
+        dividing the maximum cost so each successive call covers a wider area.
+        After generation each polygon is smoothed for a cleaner visual result.
+        """
         self.layerRoute.RevertShapes()
 
         # maximum traversing cost for the isochrone map
@@ -223,6 +285,12 @@ class IsochroneMapForm(pdk.TGIS_PvlForm):
         self.GIS.Unlock()
 
     def GIS_MouseDown(self, _sender, _button, _shift, x, y):
+        """
+        Handles a mouse-down event on the map.
+        Converts the screen coordinates to map coordinates, places or moves the
+        origin marker at the clicked location, then triggers isochrone generation.
+        Exits immediately when the viewer is empty or not in Select mode.
+        """
         if self.GIS.IsEmpty:
             return
 

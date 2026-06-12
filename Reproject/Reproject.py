@@ -1,3 +1,28 @@
+# =============================================================================
+# Reproject sample — demonstrates on-the-fly coordinate system reprojection
+# of map layers without reloading data.
+#
+# What the sample shows:
+#   - Loading a world map (vector layer) into the GIS viewer
+#   - Accessing the projection catalogue via TGIS_Utils.CSProjList
+#   - Creating/building custom coordinate systems via TGIS_CSBuilder
+#   - Switching the viewer's coordinate system via GIS.CS property
+#   - On-the-fly reprojection: all layers instantly reproject in memory
+#   - No data reload required — reprojection is automatic and seamless
+#   - Switching between different projection types (Mercator, UTM, etc.)
+#   - Combo box selector for choosing projection from the full catalogue
+#   - Real-time map updates reflecting the new projection
+#
+# Key TatukGIS API concepts shown here:
+#   TGIS_ViewerWnd              - main visual map control
+#   TGIS_ViewerWnd.CS           - viewer's current coordinate system
+#   TGIS_LayerVector            - vector layer (auto-reproject with viewer CS)
+#   TGIS_CSCoordinateSystem      - coordinate system definition (WKT)
+#   TGIS_Utils.CSProjList        - projection catalogue and WKT lookup
+#   TGIS_Utils.CSBuilder         - builds coordinate systems by code/parameters
+#   Reprojection                 - automatic when viewer CS changes
+#   WKT format                   - Well-Known Text representation of projections
+# =============================================================================
 import tatukgis_pdk as pdk
 
 class ReprojectForm(pdk.TGIS_PvlForm):

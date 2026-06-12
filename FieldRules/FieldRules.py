@@ -1,3 +1,28 @@
+# =============================================================================
+# FieldRules sample - Demonstrates field validation and constraint rules for
+# attribute data entry and layer attribute integrity (Python PDK).
+#
+# What the sample shows:
+#   - Creating field validation rules using TGIS_FieldRule to enforce data constraints
+#   - Alias rules: provide user-friendly names for database columns
+#   - Check rules: validate against logical expressions
+#   - List rules: restrict input to predefined value enumeration
+#   - Validation rules: regex pattern matching for text fields (email format example)
+#   - Required fields: enforce NOT NULL constraints
+#   - Domain rules: restrict to specific value domains
+#   - Real-time rule attachment to layer fields via SetFieldRule
+#   - Rules are automatically enforced when editing features in an attributes grid
+#
+# Key TatukGIS PDK types used:
+#   TGIS_FieldRule          - constraint definition for field validation
+#   TGIS_LayerVector        - vector layer with attribute schema
+#   TGIS_FieldType          - data type enumeration (String, Integer, etc.)
+#   TGIS_ControlAttributes  - grid-based attribute editor with rule enforcement
+#   AddField / SetFieldRule - schema manipulation and rule attachment
+#   TGIS_Shape.SetField     - updating feature attribute values
+#   TGIS_PvlForm            - base class for PDK application windows
+# =============================================================================
+
 import tatukgis_pdk as pdk
 
 GIS_FLDX_EXT = ".fldx"

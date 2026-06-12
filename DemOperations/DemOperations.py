@@ -1,3 +1,16 @@
+# =============================================================================
+# DemOperations sample — demonstrates terrain analysis derived from a DEM raster.
+#
+# Opens an ADF elevation grid and lets the user choose from the following
+# TGIS_DemGenerator operations:
+#   Hillshade, Slope, Slope Hydro, Aspect, TRI, TPI, Roughness,
+#   Total Curvature, Matrix Gain, Flow Dir.
+#
+# A custom hillshade callback (changeDEM) is also provided to demonstrate the
+# TGIS_LayerPixel.GridOperationEvent callback mechanism.
+#
+# Data source: USGS NED ADF elevation grid, San Bernardino County, California.
+# =============================================================================
 import tatukgis_pdk as pdk
 import math
 
@@ -8,7 +21,12 @@ def changeDEM(_layer, _extent,
               _source, _output,
               _width, _height,
               _minz, _maxz):
+    """Custom TGIS_LayerPixel.GridOperationEvent callback implementing Horn's algorithm hillshade.
 
+    Reads a 3x3 neighbourhood window for each cell, computes the cosine of the
+    sun incidence angle (cang), and writes a shaded value (1..255) to _output.
+    Cells whose centre or any neighbour contains NoData are passed through unchanged.
+    """
     x_size = _width
     y_size = _height
     x_scale = (_extent.XMax - _extent.XMin) / x_size
@@ -86,6 +104,11 @@ def changeDEM(_layer, _extent,
 
 
 class DemOperationsForm(pdk.TGIS_PvlForm):
+    """Main form for the DemOperations sample.
+
+    Hosts the GIS viewer, a legend control, toolbar buttons, and a left-side
+    panel with controls to select a DEM operation and its parameters.
+    """
     def __init__(self, _owner):
         self.Caption = "DemOperations - TatukGIS DK Sample"
         self.ClientWidth = 900
@@ -274,6 +297,7 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
         self.btnFullExtent.OnClick = self.btnFullExtent_click
 
     def form_show(self, _sender):
+        """Load the default sample DEM and zoom to full extent on form show."""
         self.GIS.Open(
             pdk.TGIS_Utils.GisSamplesDataDirDownload()
             + "World/Countries/USA/States/California/San Bernardino/NED/w001001.adf"
@@ -281,6 +305,11 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
         self.GIS.FullExtent()
 
     def cbxCustomGrid_change(self, _sender):
+        """Attach or detach the custom changeDEM hillshade callback when the checkbox changes.
+
+        Checking disables the built-in grid shadow and assigns changeDEM as the
+        GridOperationEvent; unchecking removes the callback and restores the built-in shadow.
+        """
         lp = self.GIS.Items[0]
 
         if not lp:
@@ -297,28 +326,34 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
         self.GIS.InvalidateWholeMap()
 
     def btnOpen_click(self, _sender):
+        """Open a file dialog and load the chosen raster file into the viewer."""
         self.open_dialog.Execute()
         self.GIS.Open(self.open_dialog.FileName)
 
     def btnZoom_click(self, _sender):
+        """Switch the viewer interaction mode to zoom."""
         if self.GIS.IsEmpty:
             return
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
 
     def btnDrag_click(self, _sender):
+        """Switch the viewer interaction mode to pan/drag."""
         if self.GIS.IsEmpty:
             return
         self.GIS.Mode = pdk.TGIS_ViewerMode().Drag
 
     def btnFullExtent_click(self, _sender):
+        """Reset the viewer to show the full spatial extent of all loaded layers."""
         self.GIS.FullExtent()
 
     def btn3D_click(self, _sender):
+        """Toggle the viewer between 2D map view and 3D perspective view."""
         if self.GIS.IsEmpty:
             return
         self.GIS.View3D = not self.GIS.View3D
 
     def tbShadow_Scroll(self, _sender):
+        """Update the grid shadow angle on the source layer as the track bar changes."""
         lp = self.GIS.Items[0]
 
         if not lp:
@@ -330,6 +365,7 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
             self.GIS.InvalidateWholeMap()
 
     def cbOperation_Change(self, _sender):
+        """Show or hide the parameter sub-panels relevant to the currently selected DEM operation."""
         self.gbxHillShadeParams.Visible = False
         self.gbxSlopeParams.Visible = False
         self.cbxAngle.Visible = False
@@ -355,6 +391,7 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
         # self.btnGenerate.Top = self.gbxMain.Top + 260
 
     def doBusyEvent(self, _sender, pos, end, __):
+        """Report DEM processing progress as a percentage label. Hides the label when done."""
         if end <= 0:
             self.progress_bar.Visible = False
         else:
@@ -364,6 +401,10 @@ class DemOperationsForm(pdk.TGIS_PvlForm):
         self.GIS.ProcessMessages()
 
     def btnRun_click(self, _sender):
+        """Create an output grid layer, instantiate the selected TGIS_DemOperation, run
+        TGIS_DemGenerator.Process, and add the result to the viewer.
+        Any previous result layer with the same name is removed first.
+        """
         lp = self.GIS.Items[0]
 
         ld = pdk.TGIS_LayerPixel()

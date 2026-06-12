@@ -1,7 +1,18 @@
+# RasterAlgebra sample - demonstrates how to apply mathematical expressions to
+# raster layers using TGIS_RasterAlgebra to produce derived pixel or grid outputs.
+#
+# The sample loads a pixel image, a grid (DEM), or a vector layer into the viewer,
+# then evaluates a user-supplied formula cell-by-cell to build a new result layer.
+# Supported formula examples:
+#   Pixel inversion:    RGB(255 - pixel.R, 255 - pixel.G, 255 - pixel.B)
+#   Grid thresholding:  IF(grid < AVG(grid), MIN(grid), MAX(grid))
+#   Vector rasterize:   IF(NODATA(vector.GIS_UID), RGB(0,255,0), RGB(255,0,0))
+
 import tatukgis_pdk as pdk
 import math
 
 class RasterAlgebraForm(pdk.TGIS_PvlForm):
+    """Main form for the RasterAlgebra sample application."""
     SAMPLE_RESULT = "Result"
 
     def __init__(self, _owner):
@@ -79,6 +90,8 @@ class RasterAlgebraForm(pdk.TGIS_PvlForm):
 
     @staticmethod
     def apply_ramp(lp):
+        """Apply a blue-lime-red colour ramp to grid layer lp, mapping its full
+        value range to the ramp and disabling the default grid shadow."""
         lp.GenerateRamp(
             pdk.TGIS_Color.Blue, pdk.TGIS_Color.Lime, pdk.TGIS_Color.Red,
             1.0 * math.floor(lp.MinHeight),
@@ -91,6 +104,8 @@ class RasterAlgebraForm(pdk.TGIS_PvlForm):
         lp.Params.Pixel.GridShadow = False
 
     def btnPixel_click(self, _sender):
+        """Close the viewer, load a JPEG aerial photo as a pixel layer, and set
+        a default colour-inversion formula for the raster algebra expression field."""
         self.GIS.Close()
 
         path = (pdk.TGIS_Utils.GisSamplesDataDirDownload() +
@@ -104,6 +119,8 @@ class RasterAlgebraForm(pdk.TGIS_PvlForm):
         self.memoFormula.Text = "RGB(255 - pixel.R, 255 - pixel.G, 255 - pixel.B)"
 
     def btnGrid_click(self, _sender):
+        """Close the viewer, load an ADF elevation grid, apply a colour ramp, and
+        set a default threshold formula that clamps values to MIN or MAX."""
         self.GIS.Close()
         
         path = (pdk.TGIS_Utils.GisSamplesDataDirDownload() +
@@ -119,6 +136,9 @@ class RasterAlgebraForm(pdk.TGIS_PvlForm):
         self.memoFormula.Text = "IF(grid < AVG(grid), MIN(grid), MAX(grid))"
 
     def btnVector_click(self, _sender):
+        """Close the viewer, load a TIGER shapefile as a vector layer, and set
+        a default formula that rasterizes features green where data exists and
+        red where no data is present."""
         self.GIS.Close()
 
         path = (pdk.TGIS_Utils.GisSamplesDataDirDownload() +
@@ -133,6 +153,8 @@ class RasterAlgebraForm(pdk.TGIS_PvlForm):
         self.memoFormula.Text = "IF(NODATA(vector.GIS_UID), RGB(0,255,0), RGB(255,0,0))"
 
     def doBusyEvent(self, _sender, pos, _end, _abort):
+        """Report raster algebra execution progress in the progress label.
+        Shows percentage when _end > 0; hides the label when the operation ends."""
         if _end <= 0:
             self.progress_bar.Visible = False
         else:
@@ -141,6 +163,11 @@ class RasterAlgebraForm(pdk.TGIS_PvlForm):
         self.GIS.ProcessMessages()
 
     def btnExecute_click(self, _sender):
+        """Build an output pixel or grid layer whose dimensions match the highest-
+        resolution source layer, register all viewer layers with a
+        TGIS_RasterAlgebra engine, and evaluate the formula in memoFormula.
+        The result layer 'Result' replaces any previous run.  A colour ramp is
+        applied automatically when the output is a grid."""
         if self.GIS.IsEmpty:
             return
 

@@ -1,3 +1,28 @@
+# =============================================================================
+# JoinAndChart sample — demonstrates joining layer attributes with external data sources
+# and visualizing relationships through proportional symbol charting.
+#
+# What the sample shows:
+#   - Joining a map layer with an external SQLite database table
+#   - Loading joined attribute data into the layer for chart rendering
+#   - Rendering pie, bar, or column charts at each feature location
+#   - Using size field to control the overall chart scale/diameter
+#   - Using value fields to determine chart segment/bar proportions
+#   - Switching between different chart types via dropdown selector
+#   - Switching between different value fields dynamically
+#   - Visualizing multivariate relationships in spatial context
+#   - Real-time chart style updates as user selects different options
+#
+# Key TatukGIS API concepts shown here:
+#   TGIS_ViewerWnd              - main visual map control
+#   TGIS_LayerVector            - vector layer with chart rendering
+#   TGIS_LayerSHP               - shapefile layer (feature base)
+#   TGIS_Shape                  - individual geographic features
+#   TGIS_Params.Marker          - chart symbol parameters
+#   TGIS_Params.Chart           - chart configuration and appearance
+#   Database join               - linking external data to shape attributes
+#   Chart types                 - Pie, Bar, Column rendering modes
+# =============================================================================
 import tatukgis_pdk as pdk
 import sqlite3
 

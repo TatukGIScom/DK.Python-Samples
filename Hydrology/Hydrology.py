@@ -1,6 +1,33 @@
+# =============================================================================
+# Hydrology sample — TatukGIS DK Python
+#
+# Demonstrates the complete DEM-based hydrological analysis pipeline provided
+# by TGIS_Hydrology, executed step by step via UI buttons.
+#
+# Workflow (10 steps):
+#   1. Sink             — detect depressions/flat areas in the raw DEM
+#   2. Fill             — condition the DEM by raising sinks
+#   3. FlowDirection    — D8 flow-direction codes (power-of-two, 1–128)
+#   4. FlowAccumulation — upstream-cell count per cell
+#   5. AddOutlets       — place two hardcoded pour points on high-acc cells
+#   6. Watershed        — label cells by the outlet they drain toward
+#   7. Basin            — partition DEM into auto-detected drainage basins
+#   8. StreamOrder      — Strahler hierarchical ordering of stream cells
+#   9. Vectorize        — GridToPolygon (basins) + StreamToPolyline (streams)
+#  10. 3D              — drape stream layer on conditioned DEM in 3D viewer
+#
+# Data: World/Countries/Poland/DEM/Bytowski_County.tif
+# =============================================================================
+
 import tatukgis_pdk as pdk
 
+
 def create_layer_pix(dem: pdk.TGIS_LayerPixel, name: str):
+    """
+    Creates an in-memory grid layer matching dem's extent, CS, and cell size.
+    Antialias and hillshade are disabled so intermediate grids render as plain
+    coloured cells without post-processing artefacts.
+    """
     res = pdk.TGIS_LayerPixel()
     res.Build(True, dem.CS, dem.Extent, dem.BitWidth, dem.BitHeight)
     res.Name = name
@@ -8,7 +35,12 @@ def create_layer_pix(dem: pdk.TGIS_LayerPixel, name: str):
     res.Params.Pixel.GridShadow = False
     return res
 
+
 def create_layer_vec(name, cs, shape_type):
+    """
+    Creates an empty in-memory vector layer, opens it immediately, and
+    assigns the given coordinate system and default shape type.
+    """
     res = pdk.TGIS_LayerVector()
     res.Name = name
     res.Open()
@@ -16,7 +48,16 @@ def create_layer_vec(name, cs, shape_type):
     res.DefaultShapeType = shape_type
     return res
 
+
 class HydrologyForm(pdk.TGIS_PvlForm):
+    """
+    Main application form for the Hydrology sample.
+
+    Hosts the GIS viewer, the ten pipeline step buttons, a progress label,
+    and the legend control. Delegates all analysis to TGIS_Hydrology and
+    TGIS_GridToPolygon; each button handler advances the pipeline one step.
+    """
+
     dem = pdk.TGIS_LayerPixel()
     ext = pdk.TGIS_Extent()
     hydrologyToolset = pdk.TGIS_Hydrology()
@@ -129,6 +170,11 @@ class HydrologyForm(pdk.TGIS_PvlForm):
                                      pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Bottom)
 
     def do_busy_event(self, _sender, pos, end, _abort):
+        """
+        Progress callback used by TGIS_Hydrology and TGIS_GridToPolygon.
+        Shows or hides the progress label and updates the percentage caption.
+        When end <= 0 the operation has finished; otherwise pos/end gives progress.
+        """
         if end <= 0:
             self.progress_bar.Visible = False
         else:
@@ -138,6 +184,12 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.GIS.ProcessMessages()
 
     def form_show(self, _sender):
+        """
+        Loads the Bytowski County DEM on first display, stores a reference and
+        its full extent as the analysis region, disables antialias and hillshade
+        on the raw layer, then wires up the BusyEvent progress callback on the
+        shared TGIS_Hydrology toolset.
+        """
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
         self.GIS.RestrictedDrag = False
         self.GIS.Open(pdk.TGIS_Utils.GisSamplesDataDirDownload() + "World/Countries/Poland/DEM/Bytowski_County.tif")
@@ -152,12 +204,20 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.hydrologyToolset.BusyEvent = self.do_busy_event
 
     def get_layer_grd(self, name):
+        """Returns the named layer from the viewer (expected to be a pixel layer)."""
         return self.GIS.Get(name)
 
     def get_layer_vec(self, name):
+        """Returns the named layer from the viewer (expected to be a vector layer)."""
         return self.GIS.Get(name)
 
     def btnSink_click(self, _sender):
+        """
+        Step 1 — Identify DEM problems.
+        Runs TGIS_Hydrology.Sink on the raw DEM to produce a grid where non-zero
+        cells mark sinks (isolated depressions) and flat areas that prevent proper
+        flow routing. Colours the result in red for easy identification.
+        """
         self.btnSink.Enabled = False
 
         # creating a grid layer for sinks
@@ -177,6 +237,12 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btnFillSinks.Enabled = True
 
     def btnFillSinks_click(self, _sender):
+        """
+        Step 2 — Condition the DEM for flow routing.
+        Calls TGIS_Hydrology.Fill to raise depressions and flatten problematic
+        areas, producing a hydrologically conditioned DEM. Applies a YellowGreen
+        colour ramp with hillshade (GridShadow) for terrain context.
+        """
         self.btnFillSinks.Enabled = False
 
         # turning off layers
@@ -203,6 +269,12 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btnFlowDirection.Enabled = True
 
     def btnFlowDirection_click(self, _sender):
+        """
+        Step 3 — Compute D8 flow directions.
+        Runs TGIS_Hydrology.FlowDirection on the conditioned DEM to assign each
+        cell a power-of-two direction code (1=E, 2=SE, 4=S … 128=NE). Uses a
+        turbo colour ramp with one zone per code for visual clarity.
+        """
         self.btnFlowDirection.Enabled = False
 
         hydro_dem = self.get_layer_grd(self.HYDRO_LAYER_DEM)
@@ -230,6 +302,13 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btnFlowAccumulation.Enabled = True
 
     def btnFlowAccumulation_click(self, _sender):
+        """
+        Step 4 — Accumulate upstream drainage area.
+        Calls TGIS_Hydrology.FlowAccumulation to count the number of upstream
+        cells draining into each cell. Applies a geometric-interval classification
+        with the Bathymetry2 colour ramp (reversed) to reveal the river-network
+        hierarchy.
+        """
         self.btnFlowAccumulation.Enabled = False
 
         flow_dir = self.get_layer_grd(self.HYDRO_LAYER_DIRECTION)
@@ -261,6 +340,12 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btnAddOutlets.Enabled = True
 
     def btnAddOutlets_click(self, _sender):
+        """
+        Step 5 — Place watershed outlet points (pour points).
+        Creates a point vector layer and adds two hardcoded coordinates that fall
+        on high-accumulation cells, representing the points where catchment runoff
+        is captured. These outlets are used in the subsequent Watershed step.
+        """
         self.btnAddOutlets.Enabled = False
 
         # creating a grid layer for outlets (pour points)
@@ -289,6 +374,12 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btnWatershed.Enabled = True
 
     def btnWatershed_click(self, _sender):
+        """
+        Step 6 — Delineate catchment areas per outlet.
+        Calls TGIS_Hydrology.Watershed with the flow-direction grid and the outlet
+        vector layer to label every DEM cell with the ID of the outlet it drains
+        toward. Each catchment is coloured distinctly.
+        """
         self.btnWatershed.Enabled = False
 
         flow_dir = self.get_layer_grd(self.HYDRO_LAYER_DIRECTION)
@@ -313,6 +404,13 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btnBasin.Enabled = True
 
     def btnBasin_click(self, _sender):
+        """
+        Step 7 — Partition the DEM into topographic basins.
+        Calls TGIS_Hydrology.Basin with a threshold of 1 % of the maximum
+        accumulated flow to identify independent drainage basins automatically.
+        Applies a unique-value classification using the UniquePastel colour ramp
+        so each basin has a distinct fill colour.
+        """
         self.btnBasin.Enabled = False
 
         flow_dir = self.get_layer_grd(self.HYDRO_LAYER_DIRECTION)
@@ -348,6 +446,12 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btnStreamOrderStrahler.Enabled = True
 
     def btnStreamOrderStrahler_click(self, _sender):
+        """
+        Step 8 — Compute Strahler stream order.
+        Calls TGIS_Hydrology.StreamOrder with the Strahler method to classify each
+        stream cell by its hierarchical order (1 = headwater, higher = trunk).
+        Styled with a Blues colour ramp so higher-order streams appear darker.
+        """
         self.btnStreamOrderStrahler.Enabled = False
 
         flow_dir = self.get_layer_grd(self.HYDRO_LAYER_DIRECTION)
@@ -378,6 +482,14 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btnVectorize.Enabled = True
 
     def btnVectorize_click(self, _sender):
+        """
+        Step 9 — Convert raster results to vector layers.
+        Two vectorisation operations run in sequence:
+        (1) TGIS_GridToPolygon converts the basin raster to polygon shapes —
+            classified by unique basin ID with the Unique colour ramp.
+        (2) TGIS_Hydrology.StreamToPolyline converts the stream-order raster to
+            polylines — width and colour scaled by Strahler order via RENDERER.
+        """
         self.btnVectorize.Enabled = False
 
         flow_dir = self.get_layer_grd(self.HYDRO_LAYER_DIRECTION)
@@ -439,6 +551,14 @@ class HydrologyForm(pdk.TGIS_PvlForm):
         self.btn3D.Enabled = True
 
     def btn3D_click(self, _sender):
+        """
+        Step 10 — Toggle 3D terrain visualisation.
+        When switching to 3D, activates the conditioned DEM, sets ScaleZ=1 and
+        NormalizedZ=Range so elevation is proportional, hides the basin polygon
+        overlay, drapes the stream-polyline layer (labels hidden, Layer3D=Off),
+        then turns on GIS.View3D. Pressing again restores the 2D flat view.
+        Note: ShowLights and ShadowsLevel are commented out as PDK support varies.
+        """
         if self.GIS.View3D:
             self.btn3D.Caption = "View in 3D"
             self.GIS.View3D = False

@@ -1,3 +1,31 @@
+# JoinAndRender sample — demonstrates attribute joining and data-driven feature styling (Python PDK).
+#
+# What the sample shows:
+#   - Joining vector layer attributes with external SQLite database table
+#   - Loading data from external SQL database into memory
+#   - Matching features with database records via common attribute key
+#   - Applying fill colour based on joined attribute values
+#   - Applying line colour based on joined attribute values
+#   - Applying line style (solid/dashed/dotted) from database values
+#   - Applying line width based on database field values
+#   - Applying transparency/alpha blending based on attribute
+#   - Switching between different data fields for styling via combo box
+#   - Real-time colour gradient mapping from minimum to maximum value
+#   - Interactive transparency control via trackbar slider
+#   - Data-driven styling for thematic mapping
+#
+# Key TatukGIS API concepts shown here:
+#   TGIS_ViewerWnd              - main visual map control
+#   TGIS_LayerVector            - vector layer with attributes
+#   TGIS_Params                 - feature styling and rendering
+#   TGIS_Params.Pen             - line colour, width, style properties
+#   TGIS_Params.Brush           - fill colour and transparency
+#   Database join               - linking external data to shape attributes
+#   TGIS_Color                  - colour value from database
+#   Thematic mapping            - value-based feature classification
+#   TGIS_PvlForm                - base class for PDK forms
+#   TGIS_PvlPanel               - container widget for layout
+
 import tatukgis_pdk as pdk
 import sqlite3
 

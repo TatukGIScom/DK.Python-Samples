@@ -1,3 +1,31 @@
+# =============================================================================
+# Locate sample — demonstrates feature identification and location by finding
+# shapes at the cursor position using spatial queries and coordinate conversion
+# (Python PDK).
+#
+# What the sample shows:
+#   - Loading a polygon shapefile (California Counties) into the GIS viewer
+#   - Feature location: finding which shape is at a given position
+#   - Screen-to-map coordinate conversion via ScreenToMap
+#   - Spatial tolerance: 5-pixel screen tolerance for easier feature selection
+#   - GIS.Locate: queries features at a geographic position
+#   - Shape attributes: retrieving field values from selected features
+#   - Shape flashing: visual feedback highlighting the selected shape
+#   - Dynamic status bar: real-time display of feature attributes (hover tooltip)
+#   - Toolbar with Full Extent, Zoom In/Out navigation buttons
+#
+# Key TatukGIS PDK types used:
+#   TGIS_ViewerWnd       - main visual map control
+#   TGIS_ViewerWnd.ScreenToMap - convert screen pixel to geographic coordinate
+#   TGIS_ViewerWnd.Locate      - find topmost shape at location with tolerance
+#   TGIS_Shape           - geographic feature with field access
+#   TGIS_Shape.Flash()   - briefly highlight shape for visual feedback
+#   OnMouseMove / OnMouseDown - user interaction event handling
+#   TGIS_PvlForm         - base class for PDK application windows
+#   TGIS_PvlButton       - push-button widget
+#   TGIS_PvlLabel        - static text label
+# =============================================================================
+
 import tatukgis_pdk as pdk
 
 class LocateForm(pdk.TGIS_PvlForm):

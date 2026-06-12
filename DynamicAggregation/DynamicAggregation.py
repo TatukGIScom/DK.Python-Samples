@@ -1,6 +1,22 @@
+# =============================================================================
+# DynamicAggregation sample — demonstrates TGIS_DynamicAggregatorFactory for real-time point
+# clustering on a GIS layer.
+#
+# Loads a TatukGIS project (Aggregation.ttkproject) containing a "cities" point layer.  A left
+# panel offers three controls: Aggregation method (Off or a factory-registered name), Radius
+# (5–80 pt), and Threshold (0–10).  Changing any control calls change_aggregation which installs
+# or removes the selected TGIS_DynamicAggregator on the layer via
+# TGIS_DynamicAggregatorFactory.CreateInstance.
+# =============================================================================
 import tatukgis_pdk as pdk
 
 class DynamicAggregationForm(pdk.TGIS_PvlForm):
+    """
+    Main form for the DynamicAggregation sample.
+
+    Left panel: method combo, radius combo, threshold combo.
+    Right: TGIS_ViewerWnd showing the cities point layer with the active aggregator applied.
+    """
     def __init__(self, _owner):
         self.Caption = "DynamicAggregation - TatukGIS DK Sample"
         self.ClientWidth = 981
@@ -50,6 +66,8 @@ class DynamicAggregationForm(pdk.TGIS_PvlForm):
         self.cbxThreshold.OnChange = self.cbxRadius_change
 
     def form_show(self, _sender):
+        """Opens the project, populates the method combo with all registered aggregator names,
+        and sets initial selections with Radius and Threshold disabled."""
         self.GIS.Open(pdk.TGIS_Utils.GisSamplesDataDirDownload() + "Samples/Aggregation/Aggregation.ttkproject")
         self.cbxMethod.ItemsAdd("Off")
 
@@ -63,12 +81,16 @@ class DynamicAggregationForm(pdk.TGIS_PvlForm):
         self.cbxThreshold.Enabled = False
 
     def read_default_values(self):
+        """Sets a sensible default radius index when the method changes: index 0 (5 pt) for
+        ShapeReduction, index 3 (40 pt) for all other methods."""
         if self.cbxMethod.Text == "ShapeReduction":
             self.cbxRadius.ItemIndex = 0
         else:
             self.cbxRadius.ItemIndex = 3
 
     def change_aggregation(self):
+        """Installs or removes the selected TGIS_DynamicAggregator on the "cities" layer,
+        applies the current Radius and Threshold, and redraws the map."""
         dyn_agg_name = self.cbxMethod.Text
         lv = self.GIS.Get("cities")
         lv.Transparency = 70
@@ -87,13 +109,16 @@ class DynamicAggregationForm(pdk.TGIS_PvlForm):
         self.GIS.InvalidateWholeMap()
 
     def cbxMethod_change(self, _sender):
+        """Resets the default radius for the chosen method, then applies the new aggregator."""
         self.read_default_values()
         self.change_aggregation()
 
     def cbxRadius_change(self, _sender):
+        """Re-applies the aggregator with the newly selected radius."""
         self.change_aggregation()
 
     def cbxThreshold_change(self, _sender):
+        """Re-applies the aggregator with the newly selected threshold."""
         self.change_aggregation()
 
 

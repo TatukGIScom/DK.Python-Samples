@@ -1,6 +1,31 @@
+# =============================================================================
+# CuttingPolygon sample — demonstrates how to clip a raster (pixel) layer's rendering to
+# within an arbitrary polygon boundary using TGIS_LayerPixel.CuttingPolygon.
+#
+# What the sample shows:
+#   - Loading a raster image (world map) into the GIS viewer
+#   - Creating an in-memory vector layer with a custom polygon
+#   - Implementing raster clipping/masking via CuttingPolygon property
+#   - Assigning a triangular polygon as the cutting mask
+#   - Toggling clipping on/off via button click (Do Cutting)
+#   - Raster rendering constrained to polygon boundary
+#   - Remaining regions outside polygon are not rendered
+#   - Interactive zoom and pan with clipped raster display
+#
+# Key TatukGIS API concepts shown here:
+#   TGIS_ViewerWnd              - main visual map control
+#   TGIS_LayerPixel             - raster/image layer
+#   TGIS_LayerVector            - in-memory vector layer
+#   TGIS_LayerPixel.CuttingPolygon - masking/clipping property
+#   TGIS_Shape                  - polygon geometry for clipping
+#   TGIS_ControlLegend          - layer list/legend panel
+#   OnShow event                - initialization workflow
+# =============================================================================
 import tatukgis_pdk as pdk
 
 class CuttingPolygonForm(pdk.TGIS_PvlForm):
+    """CuttingPolygon sample — clips a raster layer's rendering to within an arbitrary polygon
+    boundary using TGIS_LayerPixel.CuttingPolygon."""
     NAME_SHAPE = "shape"
 
     def __init__(self, _owner):
@@ -37,6 +62,8 @@ class CuttingPolygonForm(pdk.TGIS_PvlForm):
         self.GIS_legend.Anchors = (pdk.TGIS_PvlAnchor().Right, pdk.TGIS_PvlAnchor().Top, pdk.TGIS_PvlAnchor().Bottom)
 
     def form_show(self, _sender):
+        """Opens the world raster image, creates an in-memory vector layer named "shape", and adds
+        a triangular polygon shape to it."""
         self.GIS.Open(pdk.TGIS_Utils.GisSamplesDataDirDownload()
                       + "/World/VisibleEarth/world_8km.jpg")
         ll = pdk.TGIS_LayerVector()
@@ -55,11 +82,14 @@ class CuttingPolygonForm(pdk.TGIS_PvlForm):
         self.GIS.InvalidateWholeMap()
 
     def btnZoom_click(self, _sender):
+        """Switches the viewer to Zoom mode."""
         if self.GIS.IsEmpty:
             return
         self.GIS.Mode = pdk.TGIS_ViewerMode().Zoom
 
     def btnCutting_click(self, _sender):
+        """Assigns the "shape" layer's first polygon as the raster layer's CuttingPolygon
+        (converting to the raster's coordinate system), then hides the vector layer."""
         ll = self.GIS.Get(self.NAME_SHAPE)
 
         lp = self.GIS.Items[0]

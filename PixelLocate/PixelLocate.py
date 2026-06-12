@@ -1,3 +1,29 @@
+# PixelLocate sample — demonstrates pixel-level raster data access and analysis (Python PDK).
+#
+# What the sample shows:
+#   - Loading a raster image (TIFF, JP2, etc.) into the GIS viewer
+#   - Clicking on pixels to query their data values
+#   - Retrieving raw RGB channel values from pixels
+#   - Displaying pixel colour information visually
+#   - Adjusting brightness with trackbar for enhanced visibility
+#   - Hit-testing at map coordinates to find pixel data
+#   - Showing pixel coordinate location on map
+#   - Converting screen click positions to raster coordinates
+#   - Real-time pixel inspection for satellite imagery or scanned maps
+#
+# Key TatukGIS API concepts shown here:
+#   TGIS_ViewerWnd              - main visual map control widget
+#   TGIS_LayerPixel             - raster/grid layer (imagery, DEMs, etc.)
+#   GIS.Locate()                - hit-test at point to find raster pixel
+#   GIS.ScreenToMap()           - convert screen pixels to geographic coordinates
+#   TGIS_LayerPixel.Locate()    - query pixel value at geographic coordinate
+#   TGIS_Pixel                  - individual pixel/cell value from raster
+#   RGB channels                - red, green, blue colour components
+#   Brightness adjustment       - visual enhancement for pixel inspection
+#   TGIS_PvlForm                - base class for PDK forms
+#   TGIS_PvlPanel               - container widget for layout
+#   TGIS_PvlTrackBar            - slider control for brightness adjustment
+
 import tatukgis_pdk as pdk
 
 class PixelLocateForm(pdk.TGIS_PvlForm):

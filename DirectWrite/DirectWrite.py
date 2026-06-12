@@ -1,3 +1,10 @@
+# =============================================================================
+# DirectWrite sample — demonstrates five sequential low-level write techniques on TGIS_LayerSHP:
+# Build (AddShape loop + SaveData), ImportLayerEx (spatial CONTAINS filter), MergeLayerEx
+# (DISJOINT filter), TGIS_LayerVectorDirectWriteHelper (sequential high-performance write), and
+# TGIS_LayerVectorMergeHelper (batch-commit write).
+# Buttons unlock in sequence; output files go into a numbered Shapes{n} directory.
+# =============================================================================
 import tatukgis_pdk as pdk
 import os
 
@@ -7,6 +14,12 @@ def get_directory_path(number):
     return f"{SCRIPT_PATH}/Shapes{number}/"
 
 class DirectWriteForm(pdk.TGIS_PvlForm):
+    """
+    Main form for the DirectWrite sample.
+
+    Toolbar: Build Layer, Import Layer, Merge Layer, Direct Write, Merge Helper buttons.
+    Below: TGIS_ViewerWnd showing the output layer after each step.
+    """
     def __init__(self, _owner):
         self.Caption = "DirectWrite - TatukGIS DK Sample"
         self.ClientWidth = 600
@@ -63,6 +76,7 @@ class DirectWriteForm(pdk.TGIS_PvlForm):
         self.number = 0
 
     def form_show(self, _sender):
+        """Finds the next unused Shapes{n} directory number and creates it as the output destination."""
         exist = True
         while exist:
             if os.path.exists(get_directory_path(self.number)):
@@ -73,6 +87,8 @@ class DirectWriteForm(pdk.TGIS_PvlForm):
         os.mkdir(get_directory_path(self.number))
 
     def btnBuild_click(self, _sender):
+        """Creates a new SHP layer via Build(), opens the cities source, copies structure and
+        coordinate system, loops all shapes with AddShape, then saves data."""
         self.GIS.Close()
 
         self.btnImport.Enabled = True
@@ -100,6 +116,8 @@ class DirectWriteForm(pdk.TGIS_PvlForm):
         self.GIS.InvalidateWholeMap()
 
     def btnImport_click(self, _sender):
+        """Imports a spatially filtered subset of cities using ImportLayerEx with a CONTAINS WKT
+        polygon (European bounding box); the imported layer is displayed in green."""
         self.btnMergeLayer.Enabled = True
         self.GIS.Close()
 
@@ -124,6 +142,8 @@ class DirectWriteForm(pdk.TGIS_PvlForm):
         self.GIS.InvalidateWholeMap()
 
     def btnMargeLayer_click(self, _sender):
+        """Merges cities outside the European polygon using MergeLayerEx with a DISJOINT relation;
+        the merged layer is displayed in green."""
         self.btnWrite.Enabled = True
 
         self.GIS.Close()
@@ -148,6 +168,8 @@ class DirectWriteForm(pdk.TGIS_PvlForm):
         self.GIS.InvalidateWholeMap()
 
     def btnWrite_click(self, _sender):
+        """Writes all cities to a new SHP using TGIS_LayerVectorDirectWriteHelper
+        (Build → AddShape loop → Close) for high-performance sequential writing."""
         self.btnMergeHelper.Enabled = True
 
         self.GIS.Close()
@@ -173,6 +195,8 @@ class DirectWriteForm(pdk.TGIS_PvlForm):
         self.GIS.FullExtent()
 
     def btnMargeHelper_click(self, _sender):
+        """Writes all cities to a new SHP using TGIS_LayerVectorMergeHelper with Commit() per shape
+        for batch-commit writing; resets all buttons on completion."""
         self.btnMergeHelper.Enabled = False
         self.btnImport.Enabled = False
         self.btnMergeLayer.Enabled = False

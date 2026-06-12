@@ -1,7 +1,39 @@
+# =============================================================================
+# BitmapFill sample — demonstrates per-shape bitmap fill using a custom
+# PaintShapeEvent callback.
+#
+# What the sample shows:
+#   - Loading a vector shapefile (California Counties) into the GIS viewer
+#   - Implementing custom shape rendering via PaintShapeEvent callback
+#   - Assigning per-shape bitmap textures based on attribute values
+#   - Using combo boxes to switch between different rendering criteria
+#     (population density vs. raw population)
+#   - Toggling feature labels (none, FIPS code, name) dynamically
+#   - Five different texture bitmaps demonstrating visual variety
+#   - Integration of bitmap resources with shape rendering pipeline
+#
+# Key TatukGIS API concepts shown here:
+#   TGIS_ViewerWnd              - main visual map control
+#   TGIS_LayerVector            - vector layer with custom paint callbacks
+#   TGIS_LayerSHP               - ESRI Shapefile layer (California Counties)
+#   PaintShapeEvent callback    - custom per-shape rendering hook
+#   TGIS_Shape                  - individual geographic feature
+#   TGIS_Params.Marker          - shape visualization parameters
+#   Bitmap resources            - texture fill patterns
+#   Shape attributes            - field-based rendering criteria
+# =============================================================================
 import tatukgis_pdk as pdk
 import os
 
 class BitmapFillForm(pdk.TGIS_PvlForm):
+    """
+    Main form for the BitmapFill sample.
+
+    Hosts a TGIS_ViewerWnd with a toolbar (Full Extent, Zoom In/Out, statistic and
+    label combo boxes), a side panel showing the five density-bucket texture bitmaps,
+    and a status bar.  The PaintShapeEvent callback (PaintShape) fires for each county
+    and selects a texture bitmap from Image1..Image5 based on the active statistic.
+    """
     NAME_COUNTIES = "counties"
     FIELD_POPULATION = "population"
     FIELD_AREA = "area"
@@ -114,6 +146,7 @@ class BitmapFillForm(pdk.TGIS_PvlForm):
         self.status_bar_bottom.Align = "Bottom"
 
     def form_show(self, _sender):
+        """Loads the California Counties shapefile and wires up the custom paint callback on startup."""
         # add country layer
         ll = pdk.TGIS_LayerSHP()
         ll.Path = (pdk.TGIS_Utils.GisSamplesDataDirDownload()
@@ -131,6 +164,10 @@ class BitmapFillForm(pdk.TGIS_PvlForm):
         self.comboLabels.ItemIndex = 0
 
     def PaintShape(self, _sender, _shape):
+        """
+        Custom per-shape paint callback.  Assigns one of five texture bitmaps to the county fill
+        based on the active statistic (population density or raw population), then calls _shape.Draw().
+        """
         # calculate parameters
         population = _shape.GetField(self.FIELD_POPULATION)
         area = _shape.GetField(self.FIELD_AREA)
@@ -181,22 +218,27 @@ class BitmapFillForm(pdk.TGIS_PvlForm):
             _shape.Params.Area.Bitmap = old_bitmap
 
     def FullExtent_click(self, _sender):
+        """Resets the map view to show all loaded layers."""
         self.GIS.FullExtent()
 
     def btnZoomIn_click(self, _sender):
+        """Doubles the current zoom level."""
         if self.GIS.IsEmpty:
             return
         self.GIS.Zoom = self.GIS.Zoom * 2
 
     def btnZoomOut_click(self, _sender):
+        """Halves the current zoom level."""
         if self.GIS.IsEmpty:
             return
         self.GIS.Zoom = self.GIS.Zoom / 2
 
     def comboStatistic_Change(self, _sender):
+        """Redraws the map when the statistic mode (population / density) changes."""
         self.GIS.InvalidateWholeMap()
 
     def comboLabels_Change(self, _sender):
+        """Toggles county labels between none, FIPS code (CNTYIDFP), and name (NAME)."""
         ll = self.GIS.Get(self.NAME_COUNTIES)
         if ll:
             if self.comboLabels.ItemIndex == 1:

@@ -1,6 +1,41 @@
+# =============================================================================
+# GridToVector sample — demonstrates raster-to-vector conversion using
+# TGIS_GridToPolygon (raster to polygon layer) and TGIS_GridToPoint (raster to point layer).
+#
+# What the sample shows:
+#   - Loading raster datasets (land cover TIFF, DEM grid) into the viewer
+#   - Converting raster grid cells to vector polygon shapes via GridToPolygon
+#   - Converting raster grid cells to vector point shapes via GridToPoint
+#   - Setting common parameters (tolerance, ignore-NoData) for both operations
+#   - Using GridToPolygon split-shapes option for shape decomposition
+#   - Using GridToPoint point-spacing parameter for density control
+#   - Clicking a generated shape to display its attributes
+#   - Real-time progress updates via TGIS_BusyEvent during conversion
+#
+# Key TatukGIS API concepts shown here:
+#   TGIS_ViewerWnd              - main visual map control
+#   TGIS_LayerPixel             - source raster/grid layer
+#   TGIS_GridToPolygon          - raster-to-polygon conversion class
+#   TGIS_GridToPoint            - raster-to-point conversion class
+#   TGIS_LayerVector            - destination vector layer
+#   TGIS_Shape                  - resulting polygon/point geometries
+#   TGIS_BusyEvent              - progress tracking during conversion
+#   TGIS_PvlControlAttributes   - attribute display panel
+# =============================================================================
 import tatukgis_pdk as pdk
 
 class GridToVectorForm(pdk.TGIS_PvlForm):
+    """
+    Main form for the GridToVector sample.
+
+    Hosts a TGIS_ViewerWnd on the right and a control panel on the left with:
+      - Load Data group   — buttons to open Land Cover TIFF or DEM grid
+      - Common Parameters — tolerance and ignore-NoData shared by both operations
+      - Grid To Polygon   — split-shapes option + Generate button
+      - Grid To Point     — point-spacing option + Generate button
+      - Shape Info        — TGIS_PvlControlAttributes showing clicked-shape fields
+      - Progress label    — reports TGIS_BusyEvent progress as a percentage
+    """
     LV_FIELD = "vector"
     LV_NAME = "polygons"
 
@@ -96,15 +131,17 @@ class GridToVectorForm(pdk.TGIS_PvlForm):
         self.GIS_ControlAttributes.Align = "Client"
         
     def form_show(self, _sender):
+        """Loads the Land Cover TIFF on startup (same as pressing the Land Cover button)."""
         self.GIS.Open(
             pdk.TGIS_Utils.GisSamplesDataDirDownload() +
             "World/Countries/Luxembourg/CLC2018_CLC2018_V2018_20_Luxembourg.tif"
         )
-        
+
     def GIS_MouseDown(self, _sender, _button, _shift, x, y):
+        """Locates the shape under the cursor, selects it, and shows its attributes."""
         ptg = self.GIS.ScreenToMap(pdk.TPoint(int(x), int(y)))
         shp = self.GIS.Locate(ptg, 5/self.GIS.Zoom)
-        
+
         if shp is None:
             return
 
@@ -113,12 +150,14 @@ class GridToVectorForm(pdk.TGIS_PvlForm):
         self.GIS_ControlAttributes.ShowShape(shp)
 
     def btnLoadLand_click(self, _sender):
+        """Loads the Corine Land Cover 2018 TIFF and resets tolerance/spacing to defaults."""
         self.form_show(self)
-        
+
         self.edtTolerance.Text = "1"
         self.edtPointSpacing.Text = "1000"
 
     def btnLoadDEM_click(self, _sender):
+        """Loads the elevation DEM grid, applies a blue-lime-red HSL colour ramp, and resets tolerance/spacing."""
         self.GIS.Open(
             pdk.TGIS_Utils.GisSamplesDataDirDownload() +
             "Samples/3D/elevation.grd"
@@ -146,6 +185,7 @@ class GridToVectorForm(pdk.TGIS_PvlForm):
         self.edtPointSpacing.Text = "200"
 
     def doBusyEvent(self, _sender, pos, end, _abort):
+        """Reports vectorisation progress as a percentage in the progress label."""
         if pos == 0:
             self.progressBar.Caption = 'progress: 0 %'
         elif pos < 0:
@@ -155,6 +195,12 @@ class GridToVectorForm(pdk.TGIS_PvlForm):
         self.GIS.ProcessMessages()
 
     def btnGridToPolygon_click(self, _sender):
+        """
+        Converts the source raster to a polygon vector layer using TGIS_GridToPolygon
+        with the tolerance, split-shapes, and ignore-NoData settings.
+        Any existing result layer is removed first.  Output is added with 50% transparency
+        and a black outline.
+        """
         lp = self.GIS.Items[0]
         if self.GIS.Get(self.LV_NAME):
             self.GIS.Delete(self.LV_NAME)
@@ -178,6 +224,12 @@ class GridToVectorForm(pdk.TGIS_PvlForm):
         self.GIS.InvalidateWholeMap()
 
     def btnGridToPoint_click(self, _sender):
+        """
+        Converts the source raster to a point vector layer using TGIS_GridToPoint
+        with the tolerance, point-spacing, and ignore-NoData settings.
+        Any existing result layer is removed first.  Points are styled as small black circles
+        with 75% transparency.
+        """
         lp = self.GIS.Items[0]
         if self.GIS.Get(self.LV_NAME):
             self.GIS.Delete(self.LV_NAME)

@@ -1,3 +1,27 @@
+# =============================================================================
+# InMemory sample — demonstrates creating and populating vector layers programmatically
+# at runtime, without loading from files.
+#
+# What the sample shows:
+#   - Creating an in-memory TGIS_LayerVector with custom symbol styling
+#   - Dynamically adding point shapes with random coordinates and colors
+#   - Dynamically adding polyline shapes with random vertices and styles
+#   - Dynamically adding polygon shapes with custom fills and borders
+#   - Programmatically controlling symbol properties (color, size, rotation)
+#   - Real-time visualization of dynamically generated features on the map
+#   - Animating shapes by updating their positions and redrawing the map
+#   - Useful for real-time data visualization and dynamic feature creation
+#
+# Key TatukGIS API concepts shown here:
+#   TGIS_ViewerWnd              - main visual map control
+#   TGIS_LayerVector            - in-memory vector layer container
+#   TGIS_Shape                  - individual geometries (point, polyline, polygon)
+#   TGIS_ShapeType              - shape type enumeration (Point, Arc, Polygon)
+#   TGIS_Symbol                 - visual representation of shapes
+#   TGIS_Params.Marker          - point symbol parameters
+#   TGIS_Params.Pen             - line drawing parameters (color, width, style)
+#   TGIS_Params.Brush           - fill parameters for polygons
+# =============================================================================
 import tatukgis_pdk as pdk
 from math import pi, radians
 from random import randint

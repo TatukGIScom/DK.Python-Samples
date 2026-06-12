@@ -1,6 +1,15 @@
+# =============================================================================
+# Viewshed sample — demonstrates line-of-sight terrain analysis using TGIS_Viewshed.
+# Loads a DEM (Digital Elevation Model) for San Bernardino, CA.  The user clicks on the map
+# to place observers; TGIS_Viewshed.Generate computes a viewshed raster (which cells are
+# visible from all observer points) and an AGL (Above-Ground-Level) raster (minimum height
+# needed for non-visible cells to become visible from at least one observer).
+# Radio buttons switch between binary viewshed, frequency viewshed, and AGL display.
+# =============================================================================
 import tatukgis_pdk as pdk
 
 class ViewshedForm(pdk.TGIS_PvlForm):
+    """Viewshed sample — demonstrates line-of-sight terrain analysis using TGIS_Viewshed."""
     SAMPLE_VIEWSHED_NAME = "Viewshed"
     SAMPLE_AGL_NAME = "Above-Ground-Level"
 
@@ -93,6 +102,8 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         self.lblMsg.Place(400, 19, None, 3, None, 0)
 
     def form_show(self, _sender):
+        """Opens the DEM raster for San Bernardino, CA; creates an Observers vector layer
+        with a tower symbol; and zooms to the full extent."""
         self.GIS.Lock()
         self.GIS.Open(
             pdk.TGIS_Utils.GisSamplesDataDirDownload() +
@@ -123,6 +134,8 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         self.GIS.FullExtent()
 
     def showComment(self):
+        """Updates the hint label with a description of the currently active layer's
+        color scheme."""
         if self.rbViewshedBinary.Checked:
             self.lblHint.Caption = "Green - area of visibility."
         elif self.rbViewshedFreq.Checked:
@@ -135,6 +148,8 @@ class ViewshedForm(pdk.TGIS_PvlForm):
                                 f"one observer | Red = {(round(self.lAGL.MaxHeight))} m"
 
     def makeViewshedRamp(self):
+        """Applies a binary (green = visible) or frequency (red-to-green gradient) color
+        ramp to the viewshed layer based on the selected radio button."""
         if not self.GIS.Get(self.SAMPLE_VIEWSHED_NAME):
             return
 
@@ -166,6 +181,9 @@ class ViewshedForm(pdk.TGIS_PvlForm):
             )
 
     def GIS_MouseDown(self, _sender, _button, _shift, x, y):
+        """In UserDefined mode, adds the clicked point as an observer, runs
+        TGIS_Viewshed.Generate to compute viewshed and AGL rasters, and refreshes the
+        display with the appropriate color ramp."""
         if self.GIS.IsEmpty:
             return
 
@@ -263,6 +281,8 @@ class ViewshedForm(pdk.TGIS_PvlForm):
             self.showComment()
 
     def GIS_MouseMove(self, _sender, _shift, x, y):
+        """Reads viewshed frequency and AGL values at the cursor position and displays
+        them in the status bar."""
         ptg = self.GIS.ScreenToMap(pdk.TPoint(int(x), int(y)))
 
         ref_rgb_mapped = pdk.VarParameter()
@@ -290,6 +310,8 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         self.lblMsg.Caption = txt
 
     def setLayerActive(self):
+        """Toggles active state between the viewshed and AGL layers based on the selected
+        radio button, refreshes the color ramp, and updates the hint label."""
         self.GIS.Lock()
         try:
             self.makeViewshedRamp()
@@ -302,6 +324,7 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         self.showComment()
 
     def rbViewshedBinary_click(self, _sender):
+        """Refreshes the visible layer when the binary viewshed radio button changes."""
         #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
         #As so, we simulate the control being already checked in OnClick function
         _sender.Checked = True
@@ -309,6 +332,7 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         _sender.Checked = False
 
     def rbViewshedFreq_click(self, _sender):
+        """Refreshes the visible layer when the frequency viewshed radio button changes."""
         #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
         #As so, we simulate the control being already checked in OnClick function
         _sender.Checked = True
@@ -316,6 +340,7 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         _sender.Checked = False
 
     def rbAGL_click(self, _sender):
+        """Refreshes the visible layer when the AGL radio button changes."""
         #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
         #As so, we simulate the control being already checked in OnClick function
         _sender.Checked = True
@@ -323,6 +348,7 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         _sender.Checked = False
 
     def rbAddObserver_click(self, _sender):
+        """Switches the viewer to UserDefined mode for adding observer points."""
         #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
         #As so, we simulate the control being already checked in OnClick function
         _sender.Checked = True
@@ -332,6 +358,7 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         _sender.Checked = False
 
     def rbZoom_click(self, _sender):
+        """Switches the viewer to Zoom mode."""
         #In Python, RadioButton "Checked" state is changed only after OnClick event is completed
         #As so, we simulate the control being already checked in OnClick function
         _sender.Checked = True
@@ -341,9 +368,12 @@ class ViewshedForm(pdk.TGIS_PvlForm):
         _sender.Checked = False
 
     def btnFullExtent_click(self, _sender):
+        """Zooms the viewer to the full extent of all layers."""
         self.GIS.FullExtent()
 
     def btnReset_click(self, _sender):
+        """Removes the viewshed and AGL layers and reverts all observer points to reset
+        the display."""
         self.GIS.Lock()
         try:
             if self.GIS.Get(self.SAMPLE_VIEWSHED_NAME):

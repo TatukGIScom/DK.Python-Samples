@@ -1,6 +1,38 @@
+# =============================================================================
+# Enumerators sample — demonstrates using TGIS_LayerVector.Loop() enumerators to compute the
+# neighbor count for every shape in a polygon layer (Python PDK).
+#
+# What the sample shows:
+#   - Loading a polygon shapefile (California Counties) into the GIS viewer
+#   - Using nested Loop() enumerators to iterate through all shapes and find neighbors
+#   - The outer Loop() enumerates each county polygon
+#   - The inner Loop(extent, '', shape, '****T', True) counts topologically adjacent neighbors
+#     using the DE-9IM spatial relationship filter "****T" (touching boundary)
+#   - Creating a new COUNT field via AddField and populating it with neighbor counts via MakeEditable
+#   - Rendering the layer as a 5-zone white-to-red color ramp keyed on the COUNT field
+#   - Displaying the COUNT value as labels on each county
+#   - Toolbar with Full Extent, Zoom In/Out, Dragging, and Enumerate buttons
+#
+# Key TatukGIS PDK types used:
+#   TGIS_ViewerWnd              - main visual map control
+#   TGIS_LayerVector            - vector layer with spatial indexing and enumeration
+#   TGIS_LayerVector.Loop()     - returns enumerator for spatial iteration
+#   TGIS_LayerVectorEnumerator  - iterator supporting MoveNext, Current
+#   TGIS_Shape                  - geographic feature (county polygon)
+#   TGIS_Shape.ProjectedExtent  - bounding box for spatial queries
+#   AddField / MakeEditable     - schema manipulation and feature editing
+#   Params.Render.Expression    - value expression for color ramp rendering
+#   TGIS_PvlForm                - base class for PDK application windows
+# =============================================================================
 import tatukgis_pdk as pdk
 
 class EnumeratorsForm(pdk.TGIS_PvlForm):
+    """
+    Main form for the Enumerators sample.
+
+    Hosts a TGIS_ViewerWnd pre-loaded with the California Counties shapefile and a toolbar
+    with Full Extent, Zoom In/Out, Dragging, and Enumerate buttons.
+    """
     FIELD_COUNT = "COUNT"
 
     def __init__(self, _owner):
@@ -52,25 +84,29 @@ class EnumeratorsForm(pdk.TGIS_PvlForm):
         self.GIS.FullExtent()
 
     def btnFullExtent_click(self, _sender):
+        """Resets the viewer to the full map extent."""
         self.GIS.FullExtent()
 
     def btnZoomIn_click(self, _sender):
+        """Doubles the current zoom level."""
         if self.GIS.IsEmpty:
             return
         self.GIS.Zoom = self.GIS.Zoom * 2
 
     def btnZoomOut_click(self, _sender):
+        """Halves the current zoom level."""
         if self.GIS.IsEmpty:
             return
         self.GIS.Zoom = self.GIS.Zoom / 2
 
     def btnDrag_click(self, _sender):
-        # change viewer mode
+        """Switches the viewer to Drag mode."""
         if self.GIS.IsEmpty:
             return
         self.GIS.Mode = pdk.TGIS_ViewerMode().Drag
 
     def btnEnumerate_click(self, _sender):
+        """Counts topological neighbors for every county and renders a 5-zone white-to-red ramp."""
         # get a layer with world shape
         lv = self.GIS.Items[0]
 
