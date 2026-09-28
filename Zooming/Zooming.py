@@ -1,4 +1,4 @@
-# Zooming - TatukGIS Developer Kernel (DK11) sample (Python / PDK).
+# Zooming - TatukGIS Developer Kernel sample (Python / PDK).
 #
 # Demonstrates multiple ways to zoom and navigate a loaded map:
 #   1. Loading a TatukGIS project file (.ttkproject) which bundles all
